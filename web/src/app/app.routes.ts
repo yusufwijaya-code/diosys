@@ -36,6 +36,13 @@ export const routes: Routes = [
           import('./pages/admin/admin-projects/admin-projects.component').then((m) => m.AdminProjectsComponent),
       },
       {
+        path: 'professional-projects',
+        loadComponent: () =>
+          import('./pages/admin/admin-professional-projects/admin-professional-projects.component').then(
+            (m) => m.AdminProfessionalProjectsComponent
+          ),
+      },
+      {
         path: 'inbox',
         loadComponent: () =>
           import('./pages/admin/admin-inbox/admin-inbox.component').then((m) => m.AdminInboxComponent),

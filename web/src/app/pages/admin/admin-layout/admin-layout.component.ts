@@ -15,6 +15,7 @@ import { AuthService } from '../../../core/services/auth.service';
           <a routerLink="/admin/dashboard" routerLinkActive="active"><span class="label">Dashboard</span></a>
           <a routerLink="/admin/developers" routerLinkActive="active"><span class="label">Developers</span></a>
           <a routerLink="/admin/projects" routerLinkActive="active"><span class="label">Projects</span></a>
+          <a routerLink="/admin/professional-projects" routerLinkActive="active"><span class="label">Professional Projects</span></a>
           <a routerLink="/admin/inbox" routerLinkActive="active"><span class="label">Inbox</span></a>
           <a routerLink="/admin/services" routerLinkActive="active"><span class="label">Services</span></a>
           <a routerLink="/admin/pricing" routerLinkActive="active"><span class="label">Pricing</span></a>
