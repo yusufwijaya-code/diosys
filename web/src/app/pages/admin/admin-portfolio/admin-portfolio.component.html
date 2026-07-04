@@ -36,7 +36,7 @@
 <!-- Experiences -->
 <div class="admin-card">
   <h3 style="margin-bottom:1rem">Experience</h3>
-  <table class="admin-table">
+  <table class="admin-table admin-table--flush">
     <tbody>
       @for (exp of experiences(); track exp.experienceID) {
         <tr>
@@ -59,7 +59,7 @@
 <!-- Educations -->
 <div class="admin-card">
   <h3 style="margin-bottom:1rem">Education</h3>
-  <table class="admin-table">
+  <table class="admin-table admin-table--flush">
     <tbody>
       @for (edu of educations(); track edu.educationID) {
         <tr>
@@ -82,7 +82,7 @@
 <!-- Certificates -->
 <div class="admin-card">
   <h3 style="margin-bottom:1rem">Certificates</h3>
-  <table class="admin-table">
+  <table class="admin-table admin-table--flush">
     <tbody>
       @for (cert of certificates(); track cert.certificateID) {
         <tr>

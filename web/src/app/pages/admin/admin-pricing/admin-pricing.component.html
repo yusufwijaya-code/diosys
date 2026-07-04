@@ -107,7 +107,7 @@
 }
 
 <!-- Plans list -->
-<div class="admin-card">
+<div class="admin-card admin-card--flush">
   @for (plan of plans(); track plan.planID) {
     <div class="plan-row">
       <div class="plan-info">
@@ -132,14 +132,15 @@
     </div>
   }
   @if (plans().length === 0) {
-    <p class="muted">No pricing plans yet. Click "+ New plan" to create one.</p>
+    <p class="muted" style="padding:1.5rem">No pricing plans yet. Click "+ New plan" to create one.</p>
   }
 </div>
 
 <style>
   .discount-preview { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.3); font-size: 0.82rem; font-weight: 600; padding: 0.3rem 0.75rem; border-radius: 999px; white-space: nowrap; }
   .discount-warn { color: #fca5a5; font-size: 0.82rem; }
-  .plan-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+  .plan-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+  .plan-row:last-child { border-bottom: none; }
   .plan-info { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
   .plan-title-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
   .plan-price { font-size: 1.05rem; font-weight: 600; color: var(--accent); }

@@ -53,7 +53,7 @@
   </div>
 }
 
-<div class="admin-card">
+<div class="admin-card admin-card--flush">
   @for (project of projects(); track project.projectID) {
     <div class="proj-row">
       <div class="proj-row-thumb">
@@ -81,11 +81,12 @@
       </div>
     </div>
   }
-  @if (projects().length === 0) { <p class="muted">No projects for this developer yet.</p> }
+  @if (projects().length === 0) { <p class="muted" style="padding:1.5rem">No projects for this developer yet.</p> }
 </div>
 
 <style>
-  .proj-row { display: grid; grid-template-columns: 120px 1fr auto; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .proj-row { display: grid; grid-template-columns: 120px 1fr auto; gap: 1rem; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); align-items: start; }
+  .proj-row:last-child { border-bottom: none; }
   .proj-row-thumb { width: 120px; height: 80px; border-radius: 8px; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; }
   .proj-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
   .proj-row .actions { flex-direction: column; }

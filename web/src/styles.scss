@@ -357,6 +357,30 @@ textarea.form-control { min-height: 120px; resize: vertical; }
 .admin-table th { color: var(--text-primary); font-weight: 600; }
 .admin-table .actions { display: flex; gap: 0.4rem; white-space: nowrap; }
 
+/* Flush card: for cards containing only a table or list rows */
+.admin-card--flush {
+  padding: 0;
+  overflow: hidden;
+}
+.admin-card--flush .admin-table th,
+.admin-card--flush .admin-table td {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.admin-card--flush .admin-table tr:last-child td { border-bottom: none; }
+
+/* Flush table: for tables inside padded cards (mixed content) */
+.admin-table--flush {
+  margin: 0 -1.5rem 1.25rem;
+  width: calc(100% + 3rem);
+}
+.admin-table--flush th,
+.admin-table--flush td {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+.admin-table--flush tr:last-child td { border-bottom: none; }
+
 .thumb-preview { max-width: 180px; border-radius: 8px; margin-top: 0.5rem; display: block; }
 
 /* ---------- Login ---------- */
