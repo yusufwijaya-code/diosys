@@ -88,21 +88,21 @@ export class AdminDevelopersComponent implements OnInit {
     });
   }
 
-  uploadPhoto(dev: Developer, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this.cms.uploadDeveloperPhoto(dev.userID, file).subscribe({
+  uploadPhoto(event: Event): void {
+    const id = this.editingId();
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!id || !file) return;
+    this.cms.uploadDeveloperPhoto(id, file).subscribe({
       next: () => this.load(),
       error: () => alert('Failed to upload photo.'),
     });
   }
 
-  uploadCV(dev: Developer, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    this.cms.uploadCV(dev.userID, file).subscribe({
+  uploadCV(event: Event): void {
+    const id = this.editingId();
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!id || !file) return;
+    this.cms.uploadCV(id, file).subscribe({
       next: () => { this.load(); alert('CV uploaded successfully.'); },
       error: () => alert('Failed to upload CV.'),
     });

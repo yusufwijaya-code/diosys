@@ -99,6 +99,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.error.set('Please fill in your name, email, and message.');
       return;
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.form.clientEmail)) {
+      this.error.set('Please enter a valid email address.');
+      return;
+    }
     this.error.set('');
     this.sending.set(true);
     this.publicService.sendContact(this.form).subscribe({
