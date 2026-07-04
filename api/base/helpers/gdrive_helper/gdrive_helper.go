@@ -102,3 +102,11 @@ func PublicURL(gdriveID string) string {
 	}
 	return fmt.Sprintf("https://drive.google.com/thumbnail?id=%s&sz=w1000", gdriveID)
 }
+
+// DownloadURL builds a direct download URL for any Google Drive file (e.g. PDF).
+func DownloadURL(gdriveID string) string {
+	if gdriveID == "" {
+		return ""
+	}
+	return fmt.Sprintf("https://drive.google.com/uc?export=download&id=%s", gdriveID)
+}

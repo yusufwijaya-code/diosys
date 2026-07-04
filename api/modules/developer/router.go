@@ -10,8 +10,6 @@ import (
 	"portfolio-api/modules/education/education_service"
 	"portfolio-api/modules/experience/experience_repository"
 	"portfolio-api/modules/experience/experience_service"
-	"portfolio-api/modules/language/language_repository"
-	"portfolio-api/modules/language/language_service"
 	"portfolio-api/modules/project/project_repository"
 	"portfolio-api/modules/project/project_service"
 	"portfolio-api/modules/skill/skill_repository"
@@ -32,12 +30,11 @@ func Router(public *gin.RouterGroup, cmsDevelopers *gin.RouterGroup, db *sqlx.DB
 	educationService := education_service.NewEducationService(education_repository.NewEducationRepository(db))
 	certificateService := certificate_service.NewCertificateService(certificate_repository.NewCertificateRepository(db))
 	skillService := skill_service.NewSkillService(skill_repository.NewSkillRepository(db))
-	languageService := language_service.NewLanguageService(language_repository.NewLanguageRepository(db))
 	projectService := project_service.NewProjectService(project_repository.NewProjectRepository(db), gdrive)
 
 	service := developer_service.NewDeveloperService(
 		userRepository, summaryService, experienceService, educationService,
-		certificateService, skillService, languageService, projectService, gdrive,
+		certificateService, skillService, projectService, gdrive,
 	)
 	handler := developer_handler.NewDeveloperHandler(service)
 
@@ -52,4 +49,5 @@ func Router(public *gin.RouterGroup, cmsDevelopers *gin.RouterGroup, db *sqlx.DB
 	cmsDevelopers.PUT("/:userID", handler.Update)
 	cmsDevelopers.DELETE("/:userID", handler.Delete)
 	cmsDevelopers.POST("/:userID/photo", handler.UploadPhoto)
+	cmsDevelopers.POST("/:userID/cv", handler.UploadCV)
 }

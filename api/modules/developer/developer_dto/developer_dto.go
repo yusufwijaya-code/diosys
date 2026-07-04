@@ -4,7 +4,6 @@ import (
 	"portfolio-api/modules/certificate/certificate_model"
 	"portfolio-api/modules/education/education_dto"
 	"portfolio-api/modules/experience/experience_dto"
-	"portfolio-api/modules/language/language_model"
 	"portfolio-api/modules/project/project_dto"
 	"portfolio-api/modules/skill/skill_model"
 	"portfolio-api/modules/summary/summary_dto"
@@ -32,6 +31,10 @@ type DeveloperResponse struct {
 	Specialization string `json:"specialization"`
 	Phone          string `json:"phone"`
 	Website        string `json:"website"`
+	GithubUrl      string `json:"githubUrl"`
+	LinkedinUrl    string `json:"linkedinUrl"`
+	InstagramUrl   string `json:"instagramUrl"`
+	CvUrl          string `json:"cvUrl"`
 	Location       string `json:"location"`
 	PhotoUrl       string `json:"photoUrl"`
 	IsAdmin        int    `json:"isAdmin"`
@@ -50,6 +53,9 @@ type DeveloperRequest struct {
 	Specialization string `json:"specialization"`
 	Phone          string `json:"phone"`
 	Website        string `json:"website"`
+	GithubUrl      string `json:"githubUrl"`
+	LinkedinUrl    string `json:"linkedinUrl"`
+	InstagramUrl   string `json:"instagramUrl"`
 	Location       string `json:"location"`
 	FlagActive     *bool  `json:"flagActive"`
 	OrderNo        int    `json:"orderNo"`
@@ -63,6 +69,5 @@ type DeveloperProfileResponse struct {
 	Educations   []education_dto.EducationResponse   `json:"educations"`
 	Certificates []certificate_model.Certificate     `json:"certificates"`
 	Skills       []skill_model.Skill                 `json:"skills"`
-	Languages    []language_model.Language           `json:"languages"`
 	Projects     []project_dto.ProjectResponse       `json:"projects"`
 }

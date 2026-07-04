@@ -7,7 +7,8 @@ import { Developer, DeveloperRequest } from '../../../core/models/diosys.model';
 
 const emptyForm = (): DeveloperRequest => ({
   username: '', email: '', fullName: '', jobTitle: '', intro: '', bio: '',
-  specialization: '', phone: '', website: '', location: '', flagActive: true, orderNo: 0,
+  specialization: '', phone: '', website: '', githubUrl: '', linkedinUrl: '',
+  instagramUrl: '', location: '', flagActive: true, orderNo: 0,
 });
 
 @Component({
@@ -46,7 +47,9 @@ export class AdminDevelopersComponent implements OnInit {
       username: dev.username, email: dev.email, fullName: dev.fullName,
       jobTitle: dev.jobTitle, intro: dev.intro, bio: dev.bio,
       specialization: dev.specialization, phone: dev.phone, website: dev.website,
-      location: dev.location, flagActive: dev.flagActive === 1, orderNo: dev.orderNo,
+      githubUrl: dev.githubUrl || '', linkedinUrl: dev.linkedinUrl || '',
+      instagramUrl: dev.instagramUrl || '', location: dev.location,
+      flagActive: dev.flagActive === 1, orderNo: dev.orderNo,
     };
     this.editingId.set(dev.userID);
     this.showForm.set(true);
@@ -92,6 +95,16 @@ export class AdminDevelopersComponent implements OnInit {
     this.cms.uploadDeveloperPhoto(dev.userID, file).subscribe({
       next: () => this.load(),
       error: () => alert('Failed to upload photo.'),
+    });
+  }
+
+  uploadCV(dev: Developer, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.cms.uploadCV(dev.userID, file).subscribe({
+      next: () => { this.load(); alert('CV uploaded successfully.'); },
+      error: () => alert('Failed to upload CV.'),
     });
   }
 }

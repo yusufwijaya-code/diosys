@@ -40,7 +40,10 @@
     <tbody>
       @for (exp of experiences(); track exp.experienceID) {
         <tr>
-          <td><strong>{{ exp.position }}</strong> · {{ exp.company }}<br /><span class="muted">{{ exp.period }}</span></td>
+          <td>
+            <strong>{{ exp.position }}</strong> · {{ exp.company }}<br />
+            <span class="muted">{{ exp.period }}</span>
+          </td>
           <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteExperience(exp.experienceID)">Delete</button></td>
         </tr>
       }
@@ -117,18 +120,3 @@
   <button class="btn btn-primary btn-sm" (click)="addSkill()">+ Add skill</button>
 </div>
 
-<!-- Languages -->
-<div class="admin-card">
-  <h3 style="margin-bottom:1rem">Languages</h3>
-  <div style="margin-bottom:1rem">
-    @for (lang of languages(); track lang.languageID) {
-      <span class="chip">{{ lang.name }} ({{ lang.level }}) <a (click)="deleteLanguage(lang.languageID)" style="cursor:pointer;color:#fca5a5">×</a></span>
-    }
-  </div>
-  <div class="form-row">
-    <div class="form-group"><label>Name</label><input class="form-control" [(ngModel)]="langForm.name" /></div>
-    <div class="form-group"><label>Level</label><input class="form-control" [(ngModel)]="langForm.level" /></div>
-    <div class="form-group"><label>Icon</label><input class="form-control" [(ngModel)]="langForm.icon" /></div>
-  </div>
-  <button class="btn btn-primary btn-sm" (click)="addLanguage()">+ Add language</button>
-</div>

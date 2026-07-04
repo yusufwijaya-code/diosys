@@ -14,8 +14,6 @@ import {
   EducationRequest,
   Experience,
   ExperienceRequest,
-  Language,
-  LanguageRequest,
   MessageStatusRequest,
   Project,
   ProjectRequest,
@@ -73,6 +71,11 @@ export class CmsService {
   deleteExperience(userID: number, id: number): Observable<unknown> {
     return this.api.delete<unknown>(`/cms/developers/${userID}/experiences/${id}`);
   }
+  uploadCV(userID: number, file: File): Observable<Developer> {
+    const fd = new FormData();
+    fd.append('file', file);
+    return this.api.post<Developer>(`/cms/developers/${userID}/cv`, fd);
+  }
 
   getEducations(userID: number): Observable<Education[]> {
     return this.api.get<Education[]>(`/cms/developers/${userID}/educations`);
@@ -111,19 +114,6 @@ export class CmsService {
   }
   deleteSkill(userID: number, id: number): Observable<unknown> {
     return this.api.delete<unknown>(`/cms/developers/${userID}/skills/${id}`);
-  }
-
-  getLanguages(userID: number): Observable<Language[]> {
-    return this.api.get<Language[]>(`/cms/developers/${userID}/languages`);
-  }
-  createLanguage(userID: number, body: LanguageRequest): Observable<Language> {
-    return this.api.post<Language>(`/cms/developers/${userID}/languages`, body);
-  }
-  updateLanguage(userID: number, id: number, body: LanguageRequest): Observable<Language> {
-    return this.api.put<Language>(`/cms/developers/${userID}/languages/${id}`, body);
-  }
-  deleteLanguage(userID: number, id: number): Observable<unknown> {
-    return this.api.delete<unknown>(`/cms/developers/${userID}/languages/${id}`);
   }
 
   // ---------- Projects ----------

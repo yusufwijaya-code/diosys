@@ -18,6 +18,11 @@ type User struct {
 	Specialization null.String `db:"specialization" json:"specialization"`
 	Phone          null.String `db:"phone"          json:"phone"`
 	Website        null.String `db:"website"        json:"website"`
+	GithubUrl      null.String `db:"githubUrl"      json:"githubUrl"`
+	LinkedinUrl    null.String `db:"linkedinUrl"    json:"linkedinUrl"`
+	InstagramUrl   null.String `db:"instagramUrl"   json:"instagramUrl"`
+	CvFileName     null.String `db:"cvFileName"     json:"cvFileName"`
+	CvGdriveID     null.String `db:"cvGdriveID"     json:"cvGdriveID"`
 	Location       null.String `db:"location"       json:"location"`
 	PhotoFileName  null.String `db:"photoFileName"  json:"photoFileName"`
 	PhotoGdriveID  null.String `db:"photoGdriveID"  json:"photoGdriveID"`

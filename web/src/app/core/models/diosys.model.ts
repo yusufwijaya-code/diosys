@@ -20,6 +20,10 @@ export interface Developer {
   specialization: string;
   phone: string;
   website: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  instagramUrl: string;
+  cvUrl: string;
   location: string;
   photoUrl: string;
   isAdmin: number;
@@ -82,13 +86,6 @@ export interface Skill {
   orderNo: number;
 }
 
-export interface Language {
-  languageID: number;
-  name: string;
-  level: string;
-  icon: string;
-  orderNo: number;
-}
 
 export interface ProjectImage {
   projectImageID: number;
@@ -128,7 +125,6 @@ export interface DeveloperProfile {
   educations: Education[];
   certificates: Certificate[];
   skills: Skill[];
-  languages: Language[];
   projects: Project[];
 }
 
@@ -207,6 +203,9 @@ export interface DeveloperRequest {
   specialization: string;
   phone: string;
   website: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  instagramUrl: string;
   location: string;
   flagActive: boolean;
   orderNo: number;
@@ -251,12 +250,6 @@ export interface SkillRequest {
   orderNo: number;
 }
 
-export interface LanguageRequest {
-  name: string;
-  level: string;
-  icon: string;
-  orderNo: number;
-}
 
 export interface ProjectRequest {
   title: string;

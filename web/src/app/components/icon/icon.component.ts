@@ -39,11 +39,23 @@ import { Component, Input } from '@angular/core';
         @case ('github') {
           <path d="M9 19c-4 1.5-4-2.5-6-3m12 5v-3.5a3 3 0 00-.8-2.3c2.6-.3 5.3-1.3 5.3-5.8a4.5 4.5 0 00-1.2-3.1 4.2 4.2 0 00-.1-3.1s-1-.3-3.3 1.2a11.4 11.4 0 00-6 0C6.6 2.6 5.6 2.9 5.6 2.9a4.2 4.2 0 00-.1 3.1A4.5 4.5 0 004.3 9c0 4.5 2.7 5.5 5.3 5.8a3 3 0 00-.8 2.3V21" />
         }
+        @case ('linkedin') {
+          <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" />
+          <rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
+        }
+        @case ('instagram') {
+          <rect x="2" y="2" width="20" height="20" rx="5" />
+          <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+          <path d="M17.5 6.5h.01" stroke-width="2" />
+        }
         @case ('arrow') {
           <path d="M5 12h14M13 6l6 6-6 6" />
         }
         @case ('check') {
           <path d="M20 6L9 17l-5-5" />
+        }
+        @case ('download') {
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
         }
         @default {
           <path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z" />

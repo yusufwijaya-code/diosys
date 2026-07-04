@@ -11,7 +11,6 @@ import (
 	"portfolio-api/modules/developer/developer_dto"
 	"portfolio-api/modules/education/education_service"
 	"portfolio-api/modules/experience/experience_service"
-	"portfolio-api/modules/language/language_service"
 	"portfolio-api/modules/project/project_service"
 	"portfolio-api/modules/skill/skill_service"
 	"portfolio-api/modules/summary/summary_service"
@@ -31,6 +30,7 @@ type DeveloperService interface {
 	Update(userID int, request developer_dto.DeveloperRequest) (developer_dto.DeveloperResponse, error)
 	Delete(userID int) error
 	UploadPhoto(userID int, fileHeader *multipart.FileHeader) (developer_dto.DeveloperResponse, error)
+	UploadCV(userID int, fileHeader *multipart.FileHeader) (developer_dto.DeveloperResponse, error)
 }
 
 type developerServiceImpl struct {
@@ -40,7 +40,6 @@ type developerServiceImpl struct {
 	educationService   education_service.EducationService
 	certificateService certificate_service.CertificateService
 	skillService       skill_service.SkillService
-	languageService    language_service.LanguageService
 	projectService     project_service.ProjectService
 	gdrive             *gdrive_helper.Client
 }
@@ -53,7 +52,6 @@ func NewDeveloperService(
 	educationService education_service.EducationService,
 	certificateService certificate_service.CertificateService,
 	skillService skill_service.SkillService,
-	languageService language_service.LanguageService,
 	projectService project_service.ProjectService,
 	gdrive *gdrive_helper.Client,
 ) DeveloperService {
@@ -64,7 +62,6 @@ func NewDeveloperService(
 		educationService:   educationService,
 		certificateService: certificateService,
 		skillService:       skillService,
-		languageService:    languageService,
 		projectService:     projectService,
 		gdrive:             gdrive,
 	}
@@ -82,6 +79,10 @@ func (s *developerServiceImpl) mapToResponse(user user_model.User) developer_dto
 		Specialization: user.Specialization.String,
 		Phone:          user.Phone.String,
 		Website:        user.Website.String,
+		GithubUrl:      user.GithubUrl.String,
+		LinkedinUrl:    user.LinkedinUrl.String,
+		InstagramUrl:   user.InstagramUrl.String,
+		CvUrl:          gdrive_helper.DownloadURL(user.CvGdriveID.String),
 		Location:       user.Location.String,
 		PhotoUrl:       gdrive_helper.PublicURL(user.PhotoGdriveID.String),
 		IsAdmin:        user.IsAdmin,
@@ -139,10 +140,6 @@ func (s *developerServiceImpl) GetProfileByUsername(username string) (developer_
 	if err != nil {
 		return developer_dto.DeveloperProfileResponse{}, err
 	}
-	languages, err := s.languageService.GetByUser(user.UserID)
-	if err != nil {
-		return developer_dto.DeveloperProfileResponse{}, err
-	}
 	projects, err := s.projectService.GetByUser(user.UserID)
 	if err != nil {
 		return developer_dto.DeveloperProfileResponse{}, err
@@ -155,7 +152,6 @@ func (s *developerServiceImpl) GetProfileByUsername(username string) (developer_
 		Educations:   educations,
 		Certificates: certificates,
 		Skills:       skills,
-		Languages:    languages,
 		Projects:     projects,
 	}, nil
 }
@@ -199,6 +195,9 @@ func (s *developerServiceImpl) Create(request developer_dto.DeveloperRequest) (d
 		Specialization: null.NewString(request.Specialization, request.Specialization != ""),
 		Phone:          null.NewString(request.Phone, request.Phone != ""),
 		Website:        null.NewString(request.Website, request.Website != ""),
+		GithubUrl:      null.NewString(request.GithubUrl, request.GithubUrl != ""),
+		LinkedinUrl:    null.NewString(request.LinkedinUrl, request.LinkedinUrl != ""),
+		InstagramUrl:   null.NewString(request.InstagramUrl, request.InstagramUrl != ""),
 		Location:       null.NewString(request.Location, request.Location != ""),
 		UserRoleID:     null.IntFrom(2),
 		IsAdmin:        0,
@@ -238,6 +237,9 @@ func (s *developerServiceImpl) Update(userID int, request developer_dto.Develope
 	existing.Specialization = null.NewString(request.Specialization, request.Specialization != "")
 	existing.Phone = null.NewString(request.Phone, request.Phone != "")
 	existing.Website = null.NewString(request.Website, request.Website != "")
+	existing.GithubUrl = null.NewString(request.GithubUrl, request.GithubUrl != "")
+	existing.LinkedinUrl = null.NewString(request.LinkedinUrl, request.LinkedinUrl != "")
+	existing.InstagramUrl = null.NewString(request.InstagramUrl, request.InstagramUrl != "")
 	existing.Location = null.NewString(request.Location, request.Location != "")
 	existing.FlagActive = flagActive
 	existing.OrderNo = request.OrderNo
@@ -291,6 +293,34 @@ func (s *developerServiceImpl) UploadPhoto(userID int, fileHeader *multipart.Fil
 	}
 
 	if err := s.userRepository.UpdatePhoto(userID, uploaded.FileName, uploaded.GdriveID); err != nil {
+		return developer_dto.DeveloperResponse{}, error_helper.Internal(err)
+	}
+	return s.GetByID(userID)
+}
+
+func (s *developerServiceImpl) UploadCV(userID int, fileHeader *multipart.FileHeader) (developer_dto.DeveloperResponse, error) {
+	if s.gdrive == nil {
+		return developer_dto.DeveloperResponse{}, error_helper.Internal(errors.New("google drive is not configured"))
+	}
+
+	user, err := s.userRepository.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return developer_dto.DeveloperResponse{}, error_helper.NotFound("developer not found")
+		}
+		return developer_dto.DeveloperResponse{}, error_helper.Internal(err)
+	}
+
+	uploaded, err := s.gdrive.UploadImage(fileHeader, "cv")
+	if err != nil {
+		return developer_dto.DeveloperResponse{}, error_helper.Internal(err)
+	}
+
+	if user.CvGdriveID.Valid && user.CvGdriveID.String != "" {
+		_ = s.gdrive.DeleteFile(user.CvGdriveID.String)
+	}
+
+	if err := s.userRepository.UpdateCV(userID, uploaded.FileName, uploaded.GdriveID); err != nil {
 		return developer_dto.DeveloperResponse{}, error_helper.Internal(err)
 	}
 	return s.GetByID(userID)

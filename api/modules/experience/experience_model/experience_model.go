@@ -35,3 +35,4 @@ type ExperienceResponsibility struct {
 	Description                string `db:"description"                json:"description"`
 	OrderNo                    int    `db:"orderNo"                    json:"orderNo"`
 }
+

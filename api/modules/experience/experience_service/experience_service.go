@@ -39,12 +39,12 @@ func (s *experienceServiceImpl) buildResponse(experience experience_model.Experi
 	}
 
 	technologyNames := make([]string, 0, len(technologies))
-	for _, technology := range technologies {
-		technologyNames = append(technologyNames, technology.Name)
+	for _, t := range technologies {
+		technologyNames = append(technologyNames, t.Name)
 	}
 	responsibilityTexts := make([]string, 0, len(responsibilities))
-	for _, responsibility := range responsibilities {
-		responsibilityTexts = append(responsibilityTexts, responsibility.Description)
+	for _, r := range responsibilities {
+		responsibilityTexts = append(responsibilityTexts, r.Description)
 	}
 
 	return experience_dto.ExperienceResponse{

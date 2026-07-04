@@ -22,6 +22,7 @@ type DeveloperHandler interface {
 	Update(c *gin.Context)
 	Delete(c *gin.Context)
 	UploadPhoto(c *gin.Context)
+	UploadCV(c *gin.Context)
 }
 
 type developerHandlerImpl struct {
@@ -142,4 +143,23 @@ func (h *developerHandlerImpl) UploadPhoto(c *gin.Context) {
 		return
 	}
 	http_helper.SuccessResponse(c, constants.EC_SUCCESS, "Photo uploaded", result)
+}
+
+func (h *developerHandlerImpl) UploadCV(c *gin.Context) {
+	userID, err := strconv.Atoi(c.Param("userID"))
+	if err != nil {
+		http_helper.HttpErrorResponse(c, error_helper.Validation("invalid developer id"))
+		return
+	}
+	fileHeader, err := c.FormFile("file")
+	if err != nil {
+		http_helper.HttpErrorResponse(c, error_helper.Validation("file is required"))
+		return
+	}
+	result, err := h.service.UploadCV(userID, fileHeader)
+	if err != nil {
+		http_helper.HttpErrorResponse(c, err)
+		return
+	}
+	http_helper.SuccessResponse(c, constants.EC_SUCCESS, "CV uploaded", result)
 }

@@ -8,8 +8,8 @@ import (
 )
 
 const userColumns = `userID, username, email, googleSub, fullName, jobTitle, intro, bio,
-	specialization, phone, website, location, photoFileName, photoGdriveID, userRoleID,
-	isAdmin, flagActive, orderNo, createdDate, editedDate`
+	specialization, phone, website, githubUrl, linkedinUrl, instagramUrl, cvFileName, cvGdriveID,
+	location, photoFileName, photoGdriveID, userRoleID, isAdmin, flagActive, orderNo, createdDate, editedDate`
 
 // UserRepository handles persistence for Diosys accounts / developer profiles.
 type UserRepository interface {
@@ -23,6 +23,7 @@ type UserRepository interface {
 	Delete(userID int) error
 	UpdateGoogleSub(userID int, googleSub string) error
 	UpdatePhoto(userID int, fileName, gdriveID string) error
+	UpdateCV(userID int, fileName, gdriveID string) error
 }
 
 type userRepositoryImpl struct {
@@ -72,12 +73,13 @@ func (r *userRepositoryImpl) Count() (int, error) {
 func (r *userRepositoryImpl) Create(user user_model.User) (int, error) {
 	query := `INSERT INTO ms_user
 		(username, email, googleSub, fullName, jobTitle, intro, bio, specialization,
-		 phone, website, location, userRoleID, isAdmin, flagActive, orderNo)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		 phone, website, githubUrl, linkedinUrl, instagramUrl, location, userRoleID, isAdmin, flagActive, orderNo)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 	result, err := r.db.Exec(query,
 		user.Username, user.Email, user.GoogleSub, user.FullName, user.JobTitle, user.Intro,
-		user.Bio, user.Specialization, user.Phone, user.Website, user.Location, user.UserRoleID,
-		user.IsAdmin, user.FlagActive, user.OrderNo)
+		user.Bio, user.Specialization, user.Phone, user.Website,
+		user.GithubUrl, user.LinkedinUrl, user.InstagramUrl,
+		user.Location, user.UserRoleID, user.IsAdmin, user.FlagActive, user.OrderNo)
 	if err != nil {
 		return 0, err
 	}
@@ -88,12 +90,14 @@ func (r *userRepositoryImpl) Create(user user_model.User) (int, error) {
 func (r *userRepositoryImpl) Update(user user_model.User) error {
 	query := `UPDATE ms_user SET
 		username = ?, email = ?, fullName = ?, jobTitle = ?, intro = ?, bio = ?,
-		specialization = ?, phone = ?, website = ?, location = ?, flagActive = ?, orderNo = ?
+		specialization = ?, phone = ?, website = ?, githubUrl = ?, linkedinUrl = ?,
+		instagramUrl = ?, location = ?, flagActive = ?, orderNo = ?
 		WHERE userID = ?`
 	_, err := r.db.Exec(query,
 		user.Username, user.Email, user.FullName, user.JobTitle, user.Intro, user.Bio,
-		user.Specialization, user.Phone, user.Website, user.Location, user.FlagActive,
-		user.OrderNo, user.UserID)
+		user.Specialization, user.Phone, user.Website,
+		user.GithubUrl, user.LinkedinUrl, user.InstagramUrl,
+		user.Location, user.FlagActive, user.OrderNo, user.UserID)
 	return err
 }
 
@@ -110,6 +114,12 @@ func (r *userRepositoryImpl) UpdateGoogleSub(userID int, googleSub string) error
 
 func (r *userRepositoryImpl) UpdatePhoto(userID int, fileName, gdriveID string) error {
 	_, err := r.db.Exec(`UPDATE ms_user SET photoFileName = ?, photoGdriveID = ? WHERE userID = ?`,
+		null.NewString(fileName, fileName != ""), null.NewString(gdriveID, gdriveID != ""), userID)
+	return err
+}
+
+func (r *userRepositoryImpl) UpdateCV(userID int, fileName, gdriveID string) error {
+	_, err := r.db.Exec(`UPDATE ms_user SET cvFileName = ?, cvGdriveID = ? WHERE userID = ?`,
 		null.NewString(fileName, fileName != ""), null.NewString(gdriveID, gdriveID != ""), userID)
 	return err
 }

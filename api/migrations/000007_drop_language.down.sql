@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS `ms_language` (
+    `languageID`  INT AUTO_INCREMENT PRIMARY KEY,
+    `userID`      INT NOT NULL,
+    `name`        VARCHAR(100) NOT NULL,
+    `level`       VARCHAR(50)  NOT NULL,
+    `icon`        VARCHAR(50)  NOT NULL,
+    `orderNo`     INT NOT NULL DEFAULT 0,
+    `createdDate` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `editedDate`  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT `fkLanguageUser` FOREIGN KEY (`userID`) REFERENCES `ms_user` (`userID`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
