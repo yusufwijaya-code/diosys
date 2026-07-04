@@ -1,6 +1,9 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { IconComponent } from '../../../components/icon/icon.component';
 import { PublicService } from '../../../core/services/public.service';
@@ -20,7 +23,7 @@ import {
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   services = signal<Service[]>([]);
   projects = signal<Project[]>([]);
   developers = signal<DeveloperCard[]>([]);
@@ -33,7 +36,16 @@ export class HomeComponent implements OnInit {
 
   form: MessageRequest = { clientName: '', clientEmail: '', clientPhone: '', subject: '', messageBody: '' };
 
-  constructor(private publicService: PublicService) {}
+  private apisLoaded = 0;
+  private pendingFragment: string | null = null;
+  private routerSub!: Subscription;
+
+  constructor(
+    private publicService: PublicService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private scroller: ViewportScroller,
+  ) {}
 
   whatsappLink = computed(() => {
     const s = this.settings();
@@ -43,12 +55,36 @@ export class HomeComponent implements OnInit {
     return `https://wa.me/${number}${text ? '?text=' + text : ''}`;
   });
 
+  private onApiLoaded(): void {
+    if (++this.apisLoaded < 5) return;
+    if (this.pendingFragment) {
+      const fragment = this.pendingFragment;
+      this.pendingFragment = null;
+      setTimeout(() => this.scroller.scrollToAnchor(fragment), 0);
+    }
+  }
+
   ngOnInit(): void {
-    this.publicService.getServices().subscribe((s) => this.services.set(s));
-    this.publicService.getProjects().subscribe((p) => this.projects.set(p.slice(0, 6)));
-    this.publicService.getDevelopers().subscribe((d) => this.developers.set(d));
-    this.publicService.getPricing().subscribe((p) => this.pricingPlans.set(p));
-    this.publicService.getSettings().subscribe((s) => this.settings.set(s));
+    // Capture fragment from initial navigation (cross-page arrival)
+    this.pendingFragment = this.route.snapshot.fragment;
+
+    this.publicService.getServices().subscribe((s) => { this.services.set(s); this.onApiLoaded(); });
+    this.publicService.getProjects().subscribe((p) => { this.projects.set(p.slice(0, 6)); this.onApiLoaded(); });
+    this.publicService.getDevelopers().subscribe((d) => { this.developers.set(d); this.onApiLoaded(); });
+    this.publicService.getPricing().subscribe((p) => { this.pricingPlans.set(p); this.onApiLoaded(); });
+    this.publicService.getSettings().subscribe((s) => { this.settings.set(s); this.onApiLoaded(); });
+
+    // Handle fragment navigation while already on the home page (anchorScrolling is disabled globally)
+    this.routerSub = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(() => {
+      const fragment = this.route.snapshot.fragment;
+      if (fragment) setTimeout(() => this.scroller.scrollToAnchor(fragment), 0);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub?.unsubscribe();
   }
 
   formatPrice(price: number, currency: string): string {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,8 @@ import { RouterOutlet } from '@angular/router';
   imports: [RouterOutlet],
   template: '<router-outlet />',
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(scroller: ViewportScroller) {
+    scroller.setOffset([0, 88]);
+  }
+}

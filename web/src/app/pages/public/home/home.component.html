@@ -107,8 +107,7 @@
 </section>
 
 <!-- Pricing -->
-@if (pricingPlans().length > 0) {
-<section id="pricing" class="section section-secondary">
+<section id="pricing" class="section section-secondary" [style.display]="pricingPlans().length === 0 ? 'none' : ''">
   <div class="container">
     <span class="eyebrow">Pricing</span>
     <h2 class="section-title">Transparent pricing, no surprises</h2>
@@ -153,7 +152,6 @@
     </div>
   </div>
 </section>
-}
 
 <!-- Contact -->
 <section id="contact" class="section section-secondary">
