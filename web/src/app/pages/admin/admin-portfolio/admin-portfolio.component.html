@@ -1,0 +1,134 @@
+<div class="admin-topbar">
+  <h1>Portfolio · {{ developer()?.fullName }}</h1>
+  <a class="btn btn-secondary" routerLink="/admin/developers">← Developers</a>
+</div>
+
+@if (notice()) { <div class="alert alert-success">{{ notice() }}</div> }
+
+<!-- Summary -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Summary</h3>
+  <div class="form-group"><label>About content</label><textarea class="form-control" [(ngModel)]="summary.content"></textarea></div>
+
+  <label>Stats</label>
+  @for (stat of summary.stats; track $index) {
+    <div class="repeater-row">
+      <input class="form-control" placeholder="Number (e.g. 5+)" [(ngModel)]="stat.number" />
+      <input class="form-control" placeholder="Label" [(ngModel)]="stat.label" />
+      <button class="btn btn-danger btn-sm" (click)="removeStat($index)">×</button>
+    </div>
+  }
+  <button class="btn btn-secondary btn-sm" (click)="addStat()">+ Stat</button>
+
+  <label style="margin-top:1rem;display:block">Facts</label>
+  @for (fact of summary.facts; track $index) {
+    <div class="repeater-row">
+      <input class="form-control" placeholder="Icon" [(ngModel)]="fact.icon" />
+      <input class="form-control" placeholder="Text" [(ngModel)]="fact.text" />
+      <button class="btn btn-danger btn-sm" (click)="removeFact($index)">×</button>
+    </div>
+  }
+  <button class="btn btn-secondary btn-sm" (click)="addFact()">+ Fact</button>
+
+  <div style="margin-top:1rem"><button class="btn btn-primary" (click)="saveSummary()">Save summary</button></div>
+</div>
+
+<!-- Experiences -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Experience</h3>
+  <table class="admin-table">
+    <tbody>
+      @for (exp of experiences(); track exp.experienceID) {
+        <tr>
+          <td><strong>{{ exp.position }}</strong> · {{ exp.company }}<br /><span class="muted">{{ exp.period }}</span></td>
+          <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteExperience(exp.experienceID)">Delete</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div class="form-row">
+    <div class="form-group"><label>Position</label><input class="form-control" [(ngModel)]="expForm.position" /></div>
+    <div class="form-group"><label>Company</label><input class="form-control" [(ngModel)]="expForm.company" /></div>
+    <div class="form-group"><label>Period</label><input class="form-control" [(ngModel)]="expForm.period" /></div>
+  </div>
+  <div class="form-group"><label>Technologies (comma separated)</label><input class="form-control" [(ngModel)]="expForm.technologies" /></div>
+  <div class="form-group"><label>Responsibilities (one per line)</label><textarea class="form-control" [(ngModel)]="expForm.responsibilities"></textarea></div>
+  <button class="btn btn-primary btn-sm" (click)="addExperience()">+ Add experience</button>
+</div>
+
+<!-- Educations -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Education</h3>
+  <table class="admin-table">
+    <tbody>
+      @for (edu of educations(); track edu.educationID) {
+        <tr>
+          <td><strong>{{ edu.degree }}</strong> · {{ edu.institution }}<br /><span class="muted">{{ edu.year }}</span></td>
+          <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteEducation(edu.educationID)">Delete</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div class="form-row">
+    <div class="form-group"><label>Degree</label><input class="form-control" [(ngModel)]="eduForm.degree" /></div>
+    <div class="form-group"><label>Institution</label><input class="form-control" [(ngModel)]="eduForm.institution" /></div>
+    <div class="form-group"><label>Year</label><input class="form-control" [(ngModel)]="eduForm.year" /></div>
+    <div class="form-group"><label>Type</label><input class="form-control" [(ngModel)]="eduForm.type" /></div>
+  </div>
+  <div class="form-group"><label>Achievements (one per line)</label><textarea class="form-control" [(ngModel)]="eduForm.achievements"></textarea></div>
+  <button class="btn btn-primary btn-sm" (click)="addEducation()">+ Add education</button>
+</div>
+
+<!-- Certificates -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Certificates</h3>
+  <table class="admin-table">
+    <tbody>
+      @for (cert of certificates(); track cert.certificateID) {
+        <tr>
+          <td><strong>{{ cert.name }}</strong> · {{ cert.issuer }}<br /><span class="muted">{{ cert.period }}</span></td>
+          <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteCertificate(cert.certificateID)">Delete</button></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div class="form-row">
+    <div class="form-group"><label>Name</label><input class="form-control" [(ngModel)]="certForm.name" /></div>
+    <div class="form-group"><label>Issuer</label><input class="form-control" [(ngModel)]="certForm.issuer" /></div>
+    <div class="form-group"><label>Period</label><input class="form-control" [(ngModel)]="certForm.period" /></div>
+    <div class="form-group"><label>Link</label><input class="form-control" [(ngModel)]="certForm.link" /></div>
+  </div>
+  <button class="btn btn-primary btn-sm" (click)="addCertificate()">+ Add certificate</button>
+</div>
+
+<!-- Skills -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Skills</h3>
+  <div style="margin-bottom:1rem">
+    @for (skill of skills(); track skill.skillID) {
+      <span class="chip">{{ skill.name }} <a (click)="deleteSkill(skill.skillID)" style="cursor:pointer;color:#fca5a5">×</a></span>
+    }
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Name</label><input class="form-control" [(ngModel)]="skillForm.name" /></div>
+    <div class="form-group"><label>Level</label><input class="form-control" [(ngModel)]="skillForm.level" /></div>
+    <div class="form-group"><label>Category</label><input class="form-control" [(ngModel)]="skillForm.category" /></div>
+  </div>
+  <button class="btn btn-primary btn-sm" (click)="addSkill()">+ Add skill</button>
+</div>
+
+<!-- Languages -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Languages</h3>
+  <div style="margin-bottom:1rem">
+    @for (lang of languages(); track lang.languageID) {
+      <span class="chip">{{ lang.name }} ({{ lang.level }}) <a (click)="deleteLanguage(lang.languageID)" style="cursor:pointer;color:#fca5a5">×</a></span>
+    }
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Name</label><input class="form-control" [(ngModel)]="langForm.name" /></div>
+    <div class="form-group"><label>Level</label><input class="form-control" [(ngModel)]="langForm.level" /></div>
+    <div class="form-group"><label>Icon</label><input class="form-control" [(ngModel)]="langForm.icon" /></div>
+  </div>
+  <button class="btn btn-primary btn-sm" (click)="addLanguage()">+ Add language</button>
+</div>

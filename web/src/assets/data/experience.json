@@ -1,0 +1,49 @@
+[
+  {
+    "position": "Software Engineer",
+    "company": "PT. Esensi Solusi Buana (ESB)",
+    "period": "02/2023 - Present",
+    "technologies": ["Yii2", "Angular", "PHP", "JavaScript", "MySQL", "Golang", "REST API"],
+    "responsibilities": [
+      "Employed Yii2 and Angular Framework to create diverse projects.",
+      "Participated in the creation of CMS (Content Management System), POS (Point Of Sales), and ERP (Enterprise Resource Planning) application systems at Starbucks Indonesia.",
+      "Offered assistance in resolving issues and addressing application system glitches throughout all Starbucks Indonesia outlets.",
+      "Successfully integrated POS payment with Wifi ID, enabling customers to conveniently use their Wifi ID credentials for payment.",
+      "Revamped the Starbucks Card validation system, encompassing both POS and ERP.",
+      "Prepared comprehensive README documentation outlining detailed installation and usage procedures for various application systems at Starbucks Indonesia.",
+      "Implemented regional CRUD functionality in CMS, serving as a backend for the API in the Starbucks App.",
+      "Developed a Log Activity feature in POS to track and monitor user actions at outlets.",
+      "Ensured consistent display formatting of IDR (Indonesian Rupiah) on POS.",
+      "Optimized ERP application report queries by utilizing indexing, resulting in improved query performance.",
+      "Designed Milestone Stars in CMS to enhance customer care and engagement.",
+      "Created an Open API General Ledger in FNB ERP to facilitate seamless integration with other financial systems and streamline accounting processes.",
+      "Developed promotion integration in ERP with ShopeeFood and GrabFood applications.",
+      "Developed external promotion integration for GoFood using a queue engine architecture in Go, ensuring reliable and asynchronous processing of promotion data."
+    ]
+  },
+  {
+    "position": "Backend Web Developer",
+    "company": "PT. Kreditek Financial Access",
+    "period": "10/2022 - 01/2023",
+    "technologies": ["PHP Native", "MySQL", "JavaScript", "REST API", "PDF Generation", "Laravel"],
+    "responsibilities": [
+      "Developed efficient and robust web applications using PHP Native.",
+      "Successfully contributed to the creation and enhancement of Banking System Digitization Flow.",
+      "Implemented dynamic PDF print layout generation for various banking and financial applications."
+    ]
+  },
+  {
+    "position": "Back End Developer Intern",
+    "company": "PT. Mixtra Inti Tekindo",
+    "period": "01/2022 - 01/2022",
+    "technologies": ["Laravel", "PHP", "MySQL", "GitHub", "HTML", "CSS", "JavaScript"],
+    "responsibilities": [
+      "Developed web applications using the Laravel Framework, ensuring robust and efficient functionalities.",
+      "Built a CRUD system for a Plastic Catalog Provider Website (SOPRA), streamlining data management and operations.",
+      "Utilized GitHub for collaborative teamwork, enabling efficient version control and project collaboration.",
+      "Contributed to frontend development for multiple websites, creating visually appealing and user-friendly interfaces.",
+      "Communicated and explained system functionalities to customers, ensuring smooth user experiences.",
+      "Utilized SQL to fetch and manipulate databases, maintaining data integrity and performance."
+    ]
+  }
+]

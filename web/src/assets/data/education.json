@@ -1,0 +1,17 @@
+[
+  {
+    "degree": "Informatics Engineering",
+    "institution": "Syarif Hidayatullah State Islamic University Jakarta",
+    "year": "2024",
+    "type": "Bachelor's degree",
+    "achievements": [
+      "Enrolled as a Cloud Computing Student in 2022 at Bangkit Academy led by Google, Tokopedia, Gojek, and Traveloka, where I successfully implemented DevOps practices and built cloud-based applications.",
+      "Served as Coordinator of Secretarial and Inventory Division at UKM LDK Syahid, developing the organization's official website using Laravel Framework and managing administrative and inventory operations efficiently.",
+      "Contributed as a Staff Graphic Designer in the Public Relation Department of UKM Bahasa, creating consistent and engaging visual content using Figma and enhancing the organization's brand presence on social media.",
+      "Actively participated as a Staff of Regeneration and Advocacy Division in HIMTI, leading public advocacy initiatives and supporting student welfare programs.",
+      "Contributed as an Assistant for the Evaluation Team during the 2020 Electronic-Based Public Service Assessment.",
+      "Authored a scientific paper on 'Implementation of Machine Learning K-Nearest Neighbors (KNN) with Python Language'.",
+      "Published a journal on 'Performance Analysis of KNN, Naive Bayes, and SVM Algorithms for Classification of Natural Language Processing Texts'."
+    ]
+  }
+]

@@ -1,0 +1,150 @@
+<div class="admin-topbar">
+  <h1>Pricing Plans</h1>
+  <button class="btn btn-primary" (click)="startCreate()">+ New plan</button>
+</div>
+
+@if (showForm()) {
+  <div class="admin-card">
+    <h3 style="margin-bottom:1rem">{{ editingId() ? 'Edit plan' : 'New plan' }}</h3>
+    @if (error()) { <div class="alert alert-error">{{ error() }}</div> }
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" [(ngModel)]="form.title" placeholder="e.g. Starter" />
+      </div>
+      <div class="form-group">
+        <label>Badge <span class="muted">(optional — e.g. Most Popular)</span></label>
+        <input class="form-control" [(ngModel)]="form.badge" placeholder="Most Popular" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Subtitle</label>
+      <input class="form-control" [(ngModel)]="form.subtitle" placeholder="Perfect for small projects" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Price</label>
+        <input class="form-control" type="number" [(ngModel)]="form.price" />
+      </div>
+      <div class="form-group">
+        <label>Currency</label>
+        <select class="form-control" [(ngModel)]="form.currency">
+          <option value="IDR">IDR</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Billing period</label>
+        <input class="form-control" [(ngModel)]="form.billingPeriod" placeholder="/ project" />
+      </div>
+    </div>
+
+    <!-- Promotion / original price -->
+    <div class="form-group">
+      <label>
+        <input type="checkbox" [(ngModel)]="hasOriginalPrice" style="margin-right:0.4rem" />
+        Show promotional discount (original price with strikethrough)
+      </label>
+      @if (hasOriginalPrice) {
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.5rem;flex-wrap:wrap">
+          <input class="form-control" type="number" [(ngModel)]="form.originalPrice"
+                 placeholder="Original price before discount" style="max-width:280px" />
+          @if (discountPreview) {
+            <span class="discount-preview">{{ discountPreview }}</span>
+          } @else if (form.originalPrice && form.originalPrice <= form.price) {
+            <span class="discount-warn">⚠ Original price must be higher than current price</span>
+          }
+        </div>
+        <p class="muted" style="margin-top:0.4rem;font-size:0.82rem">
+          Discount % is calculated automatically: ({{ form.originalPrice || 0 }} − {{ form.price }}) ÷ {{ form.originalPrice || '?' }} × 100
+        </p>
+      }
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Featured <span class="muted">(highlighted card)</span></label>
+        <select class="form-control" [(ngModel)]="form.isFeatured">
+          <option [ngValue]="false">No</option>
+          <option [ngValue]="true">Yes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Active</label>
+        <select class="form-control" [(ngModel)]="form.flagActive">
+          <option [ngValue]="true">Active</option>
+          <option [ngValue]="false">Inactive</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Order</label>
+        <input class="form-control" type="number" [(ngModel)]="form.orderNo" />
+      </div>
+    </div>
+
+    <!-- Features -->
+    <label style="display:block;margin-bottom:0.5rem;font-weight:500;font-size:0.85rem;color:var(--text-primary)">Features</label>
+    @for (feat of features; track $index) {
+      <div class="repeater-row" style="align-items:center">
+        <select class="form-control" [(ngModel)]="feat.isIncluded" style="max-width:110px">
+          <option [ngValue]="true">✓ Included</option>
+          <option [ngValue]="false">✕ Not included</option>
+        </select>
+        <input class="form-control" [(ngModel)]="feat.text" placeholder="Feature description" />
+        <button class="btn btn-danger btn-sm" (click)="removeFeature($index)">×</button>
+      </div>
+    }
+    <button class="btn btn-secondary btn-sm" (click)="addFeature()">+ Add feature</button>
+
+    <div style="display:flex;gap:0.5rem;margin-top:1.25rem">
+      <button class="btn btn-primary" (click)="save()" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save plan' }}</button>
+      <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+}
+
+<!-- Plans list -->
+<div class="admin-card">
+  @for (plan of plans(); track plan.planID) {
+    <div class="plan-row">
+      <div class="plan-info">
+        <div class="plan-title-row">
+          <strong>{{ plan.title }}</strong>
+          @if (plan.badge) { <span class="chip chip-accent">{{ plan.badge }}</span> }
+          @if (plan.isFeatured) { <span class="chip">Featured</span> }
+          @if (!plan.flagActive) { <span class="chip" style="opacity:0.5">Inactive</span> }
+        </div>
+        <span class="plan-price">{{ formatPrice(plan.price, plan.currency) }} {{ plan.billingPeriod }}</span>
+        @if (plan.discountPercent) { <span class="pricing-discount-badge">-{{ plan.discountPercent }}%</span> }
+        <div class="plan-features-preview">
+          @for (feat of plan.features; track feat.featureID) {
+            <span [class.feat-off]="!feat.isIncluded">{{ feat.isIncluded ? '✓' : '✕' }} {{ feat.text }}</span>
+          }
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary btn-sm" (click)="startEdit(plan)">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="remove(plan)">Delete</button>
+      </div>
+    </div>
+  }
+  @if (plans().length === 0) {
+    <p class="muted">No pricing plans yet. Click "+ New plan" to create one.</p>
+  }
+</div>
+
+<style>
+  .discount-preview { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.3); font-size: 0.82rem; font-weight: 600; padding: 0.3rem 0.75rem; border-radius: 999px; white-space: nowrap; }
+  .discount-warn { color: #fca5a5; font-size: 0.82rem; }
+  .plan-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+  .plan-info { flex: 1; display: flex; flex-direction: column; gap: 0.3rem; }
+  .plan-title-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .plan-price { font-size: 1.05rem; font-weight: 600; color: var(--accent); }
+  .pricing-discount-badge { display: inline-block; background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.3); font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 999px; }
+  .plan-features-preview { display: flex; flex-wrap: wrap; gap: 0.3rem 0.75rem; margin-top: 0.25rem; }
+  .plan-features-preview span { font-size: 0.8rem; color: var(--text-secondary); }
+  .plan-features-preview .feat-off { opacity: 0.45; }
+</style>

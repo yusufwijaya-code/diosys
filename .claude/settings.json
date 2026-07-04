@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go mod *)",
+      "Bash(go build *)",
+      "Bash(go list *)",
+      "Bash(./tmp/portfolio-api.exe)",
+      "Bash(curl -s -m 3 http://localhost:3005/api/health)",
+      "Bash(node tmp/seed.mjs)",
+      "Bash(curl -s -m 5 http://localhost:4200)",
+      "Bash(curl -s -m 5 -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:4200/admin/login)"
+    ]
+  }
+}

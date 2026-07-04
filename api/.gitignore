@@ -1,0 +1,6 @@
+/tmp/
+app.env
+app.local.env
+*.exe
+*.out
+.env

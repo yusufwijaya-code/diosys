@@ -1,0 +1,10 @@
+[
+  {
+    "projectName": "Website UKM LDK Syahid UIN Jakarta",
+    "description": "The website belongs to LDK Syahid at Universitas Islam Negeri Syarif Hidayatullah Jakarta. It serves as a platform for the campus‐based Islamic student organization to publish information about events, leadership training programs, design workshops, and creative competitions aimed at empowering students in dakwah (religious outreach and leadership) and digital content creation",
+    "client": "UKM LDK Syahid",
+    "thumbnailImage": "assets/images/projects/web-ldk-syahid.png",
+    "projectLink": "https://www.ldksyah.id/",
+    "technologies": ["Laravel", "Pyhton", "MySQL", "Google Cloud"]
+  }
+]

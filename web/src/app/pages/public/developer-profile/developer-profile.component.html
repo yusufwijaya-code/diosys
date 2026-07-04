@@ -1,0 +1,212 @@
+@if (loading()) {
+  <div class="profile-status container"><p class="muted">Loading profile…</p></div>
+}
+
+@if (notFound()) {
+  <div class="profile-status container">
+    <h2>Developer not found</h2>
+    <p class="muted">This profile doesn't exist or is no longer available.</p>
+    <a class="btn btn-ghost" [routerLink]="['/']">Back to home</a>
+  </div>
+}
+
+@if (profile(); as p) {
+  <!-- Header -->
+  <section class="profile-hero">
+    <div class="container profile-hero-inner">
+      <a class="back-link" [routerLink]="['/']" fragment="developers"><app-icon name="arrow" [size]="16" /> All developers</a>
+      <div class="profile-head">
+        <div class="profile-photo">
+          @if (p.developer.photoUrl) {
+            <img [src]="p.developer.photoUrl" [alt]="p.developer.fullName" />
+          } @else {
+            <span>{{ p.developer.fullName.charAt(0) }}</span>
+          }
+        </div>
+        <div class="profile-id">
+          <span class="eyebrow">{{ p.developer.jobTitle }}</span>
+          <h1>{{ p.developer.fullName }}</h1>
+          <p class="profile-intro">{{ p.developer.intro }}</p>
+          <div class="profile-meta">
+            @if (p.developer.location) { <span><app-icon name="pin" [size]="16" /> {{ p.developer.location }}</span> }
+            @if (p.developer.website) { <a [href]="p.developer.website" target="_blank" rel="noopener"><app-icon name="external" [size]="16" /> Website</a> }
+            @if (p.developer.email) { <a [href]="'mailto:' + p.developer.email"><app-icon name="mail" [size]="16" /> Email</a> }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container profile-body">
+    <!-- About / summary -->
+    @if (p.developer.bio || p.summary.content || p.summary.stats.length) {
+      <section class="profile-section">
+        <h2 class="block-title">About</h2>
+        @if (p.developer.bio) { <p class="bio">{{ p.developer.bio }}</p> }
+        @if (p.summary.content) { <p class="bio">{{ p.summary.content }}</p> }
+        @if (p.summary.stats.length) {
+          <div class="stats-grid">
+            @for (stat of p.summary.stats; track $index) {
+              <div class="stat"><span class="stat-num">{{ stat.number }}</span><span class="stat-label">{{ stat.label }}</span></div>
+            }
+          </div>
+        }
+        @if (p.summary.facts.length) {
+          <ul class="facts">
+            @for (fact of p.summary.facts; track $index) {
+              <li><app-icon name="check" [size]="16" /> {{ fact.text }}</li>
+            }
+          </ul>
+        }
+      </section>
+    }
+
+    <!-- Projects -->
+    @if (p.projects.length) {
+      <section class="profile-section">
+        <h2 class="block-title">Projects</h2>
+        <div class="proj-list">
+          @for (project of p.projects; track project.projectID) {
+            <article class="card proj">
+              @if (project.thumbnailUrl) {
+                <div class="proj-thumb"><img [src]="project.thumbnailUrl" [alt]="project.title" loading="lazy" /></div>
+              }
+              <div class="proj-content">
+                <div class="proj-head">
+                  <h3>{{ project.title }}</h3>
+                  @if (project.isFeatured) { <span class="chip chip-accent">Featured</span> }
+                </div>
+                @if (project.client) { <span class="muted">Client: {{ project.client }}</span> }
+                @if (project.summary) { <p class="proj-summary">{{ project.summary }}</p> }
+                @if (project.body) { <p class="proj-body">{{ project.body }}</p> }
+
+                @if (project.features.length) {
+                  <div class="proj-features">
+                    <h4>Key features</h4>
+                    <ul>
+                      @for (feature of project.features; track $index) {
+                        <li><app-icon name="check" [size]="15" /> {{ feature }}</li>
+                      }
+                    </ul>
+                  </div>
+                }
+
+                @if (project.technologies.length) {
+                  <div class="proj-tech">
+                    @for (tech of project.technologies; track $index) { <span class="chip">{{ tech }}</span> }
+                  </div>
+                }
+
+                @if (project.images.length) {
+                  <div class="proj-gallery">
+                    @for (image of project.images; track image.projectImageID) {
+                      <figure>
+                        <img [src]="image.url" [alt]="image.caption || project.title" loading="lazy" />
+                        @if (image.caption) { <figcaption>{{ image.caption }}</figcaption> }
+                      </figure>
+                    }
+                  </div>
+                }
+
+                <div class="proj-links">
+                  @if (project.projectLink) { <a class="btn btn-primary btn-sm" [href]="project.projectLink" target="_blank" rel="noopener"><app-icon name="external" [size]="15" /> Live</a> }
+                  @if (project.repoLink) { <a class="btn btn-secondary btn-sm" [href]="project.repoLink" target="_blank" rel="noopener"><app-icon name="github" [size]="15" /> Code</a> }
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Experience -->
+    @if (p.experiences.length) {
+      <section class="profile-section">
+        <h2 class="block-title">Experience</h2>
+        <div class="timeline">
+          @for (exp of p.experiences; track exp.experienceID) {
+            <div class="timeline-item">
+              <div class="timeline-head">
+                <h3>{{ exp.position }}</h3>
+                <span class="muted">{{ exp.period }}</span>
+              </div>
+              <span class="timeline-org">{{ exp.company }}</span>
+              @if (exp.responsibilities.length) {
+                <ul class="resp">
+                  @for (item of exp.responsibilities; track $index) { <li>{{ item }}</li> }
+                </ul>
+              }
+              @if (exp.technologies.length) {
+                <div class="proj-tech">
+                  @for (tech of exp.technologies; track $index) { <span class="chip">{{ tech }}</span> }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Skills -->
+    @if (p.skills.length) {
+      <section class="profile-section">
+        <h2 class="block-title">Skills</h2>
+        <div class="skill-groups">
+          @for (group of skillGroups(p.skills); track group.category) {
+            <div class="skill-group">
+              <h4>{{ group.category }}</h4>
+              <div>
+                @for (skill of group.items; track skill.skillID) { <span class="chip">{{ skill.name }}</span> }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Education & Certificates -->
+    <div class="two-col">
+      @if (p.educations.length) {
+        <section class="profile-section">
+          <h2 class="block-title">Education</h2>
+          @for (edu of p.educations; track edu.educationID) {
+            <div class="edu-item">
+              <h3>{{ edu.degree }}</h3>
+              <span class="muted">{{ edu.institution }} · {{ edu.year }}</span>
+              @if (edu.achievements.length) {
+                <ul class="resp">
+                  @for (item of edu.achievements; track $index) { <li>{{ item }}</li> }
+                </ul>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (p.certificates.length) {
+        <section class="profile-section">
+          <h2 class="block-title">Certificates</h2>
+          @for (cert of p.certificates; track cert.certificateID) {
+            <div class="edu-item">
+              <h3>{{ cert.name }}</h3>
+              <span class="muted">{{ cert.issuer }} · {{ cert.period }}</span>
+              @if (cert.link) { <a class="cert-link" [href]="cert.link" target="_blank" rel="noopener">View credential <app-icon name="external" [size]="14" /></a> }
+            </div>
+          }
+        </section>
+      }
+    </div>
+
+    <!-- Languages -->
+    @if (p.languages.length) {
+      <section class="profile-section">
+        <h2 class="block-title">Languages</h2>
+        <div class="lang-row">
+          @for (lang of p.languages; track lang.languageID) {
+            <div class="lang"><span class="lang-name">{{ lang.name }}</span><span class="muted">{{ lang.level }}</span></div>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

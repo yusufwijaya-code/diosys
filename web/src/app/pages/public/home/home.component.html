@@ -1,0 +1,212 @@
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow">Premium Technology Agency</span>
+    <h1 class="hero-title">
+      We engineer <span class="accent">premium</span> digital products &mdash;
+      web, mobile, and AI.
+    </h1>
+    <p class="hero-sub">
+      {{ settings()['companyTagline'] || 'Diosys partners with ambitious teams to design and build scalable apps, websites, and intelligent systems.' }}
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" [routerLink]="['/']" fragment="contact">Start a project</a>
+      <a class="btn btn-ghost" [routerLink]="['/']" fragment="work">View our work</a>
+    </div>
+  </div>
+  <div class="hero-glow"></div>
+</section>
+
+<!-- Services -->
+<section id="services" class="section">
+  <div class="container">
+    <span class="eyebrow">What we do</span>
+    <h2 class="section-title">Capabilities built for scale</h2>
+    <p class="section-subtitle">
+      From a first MVP to a full technology ecosystem, we deliver end-to-end.
+    </p>
+
+    <div class="services-grid">
+      @for (service of services(); track service.serviceID) {
+        <div class="card service-card">
+          <div class="service-icon"><app-icon [name]="service.icon" [size]="24" /></div>
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.description }}</p>
+        </div>
+      }
+      @if (services().length === 0) {
+        <p class="muted">Services will appear here soon.</p>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Work / Company portfolio -->
+<section id="work" class="section section-secondary">
+  <div class="container">
+    <span class="eyebrow">Selected work</span>
+    <h2 class="section-title">Projects from our developers</h2>
+    <p class="section-subtitle">A snapshot of products crafted by the Diosys team.</p>
+
+    <div class="work-grid">
+      @for (project of projects(); track project.projectID) {
+        <a class="card work-card" [routerLink]="['/', project.ownerUsername]">
+          <div class="work-thumb">
+            @if (project.thumbnailUrl) {
+              <img [src]="project.thumbnailUrl" [alt]="project.title" loading="lazy" />
+            } @else {
+              <div class="work-thumb-fallback"><app-icon name="code" [size]="30" /></div>
+            }
+            @if (project.isFeatured) { <span class="featured-badge">Featured</span> }
+          </div>
+          <div class="work-body">
+            <h3>{{ project.title }}</h3>
+            <p>{{ project.summary }}</p>
+            <div class="work-meta">
+              <span class="muted">by {{ project.ownerFullName }}</span>
+              <app-icon name="arrow" [size]="18" />
+            </div>
+          </div>
+        </a>
+      }
+      @if (projects().length === 0) {
+        <p class="muted">Our portfolio is being curated.</p>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Developer directory -->
+<section id="developers" class="section">
+  <div class="container">
+    <span class="eyebrow">The team</span>
+    <h2 class="section-title">Meet our developers</h2>
+    <p class="section-subtitle">Specialists behind every Diosys build. Explore their profiles.</p>
+
+    <div class="dev-grid">
+      @for (dev of developers(); track dev.userID) {
+        <a class="card dev-card" [routerLink]="['/', dev.username]">
+          <div class="dev-photo">
+            @if (dev.photoUrl) {
+              <img [src]="dev.photoUrl" [alt]="dev.fullName" loading="lazy" />
+            } @else {
+              <span class="dev-initials">{{ dev.fullName.charAt(0) }}</span>
+            }
+          </div>
+          <h3>{{ dev.fullName }}</h3>
+          <span class="dev-role">{{ dev.jobTitle }}</span>
+          <p class="dev-intro">{{ dev.intro }}</p>
+          <span class="dev-link">View profile <app-icon name="arrow" [size]="16" /></span>
+        </a>
+      }
+      @if (developers().length === 0) {
+        <p class="muted">Developer profiles coming soon.</p>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+@if (pricingPlans().length > 0) {
+<section id="pricing" class="section section-secondary">
+  <div class="container">
+    <span class="eyebrow">Pricing</span>
+    <h2 class="section-title">Transparent pricing, no surprises</h2>
+    <p class="section-subtitle">Choose a plan that fits your project. All plans include dedicated support.</p>
+
+    <div class="pricing-grid">
+      @for (plan of pricingPlans(); track plan.planID) {
+        <div class="pricing-card" [class.pricing-featured]="plan.isFeatured">
+          @if (plan.badge) { <span class="pricing-badge">{{ plan.badge }}</span> }
+
+          <div class="pricing-header">
+            <h3>{{ plan.title }}</h3>
+            @if (plan.subtitle) { <p class="pricing-subtitle">{{ plan.subtitle }}</p> }
+          </div>
+
+          <div class="pricing-price">
+            @if (plan.originalPrice !== null) {
+              <span class="pricing-original">{{ formatPrice(plan.originalPrice!, plan.currency) }}</span>
+            }
+            <div class="pricing-amount">
+              <span class="pricing-value">{{ formatPrice(plan.price, plan.currency) }}</span>
+              @if (plan.billingPeriod) { <span class="pricing-period">{{ plan.billingPeriod }}</span> }
+            </div>
+            @if (plan.discountPercent !== null) {
+              <span class="pricing-discount">Save {{ plan.discountPercent }}%</span>
+            }
+          </div>
+
+          <ul class="pricing-features">
+            @for (feature of plan.features; track feature.featureID) {
+              <li [class.excluded]="!feature.isIncluded">
+                <span class="feat-icon">{{ feature.isIncluded ? '✓' : '✕' }}</span>
+                {{ feature.text }}
+              </li>
+            }
+          </ul>
+
+          <a class="btn btn-block" [class.btn-primary]="plan.isFeatured" [class.btn-ghost]="!plan.isFeatured"
+             [routerLink]="['/']" fragment="contact">Get started</a>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+}
+
+<!-- Contact -->
+<section id="contact" class="section section-secondary">
+  <div class="container contact-grid">
+    <div class="contact-intro">
+      <span class="eyebrow">Get in touch</span>
+      <h2 class="section-title">Let's build something exceptional</h2>
+      <p class="section-subtitle">
+        Tell us about your project and we'll get back to you shortly.
+      </p>
+
+      <ul class="contact-list">
+        @if (settings()['contactEmail']) {
+          <li><app-icon name="mail" [size]="18" /> <a [href]="'mailto:' + settings()['contactEmail']">{{ settings()['contactEmail'] }}</a></li>
+        }
+        @if (whatsappLink()) {
+          <li><app-icon name="phone" [size]="18" /> <a [href]="whatsappLink()" target="_blank" rel="noopener">Chat on WhatsApp</a></li>
+        }
+      </ul>
+    </div>
+
+    <form class="card contact-form" (ngSubmit)="submit()">
+      @if (sent()) {
+        <div class="alert alert-success">Thanks! Your message has been sent.</div>
+      }
+      @if (error()) {
+        <div class="alert alert-error">{{ error() }}</div>
+      }
+      <div class="form-row">
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-control" name="clientName" [(ngModel)]="form.clientName" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input class="form-control" type="email" name="clientEmail" [(ngModel)]="form.clientEmail" placeholder="you@company.com" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>WhatsApp<span class="muted"> (optional)</span></label>
+        <input class="form-control" type="tel" name="clientPhone" [(ngModel)]="form.clientPhone" placeholder="+62 812 3456 7890" />
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input class="form-control" name="subject" [(ngModel)]="form.subject" placeholder="What can we help with?" />
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea class="form-control" name="messageBody" [(ngModel)]="form.messageBody" placeholder="Tell us about your project..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit" [disabled]="sending()">
+        {{ sending() ? 'Sending...' : 'Send message' }}
+      </button>
+    </form>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+{
+  "content": "Hello, my name is Yusuf Wijaya. I hold a Bachelor's degree in Informatics Engineering from UIN Syarif Hidayatullah, where I graduated with Cum Laude honors, I was actively engaged in several campus organizations, focusing on areas such as Informatics, Religion, and Language. Since completing my degree, I have developed a strong expertise in website development. My skills include server-side programming with Golang, PHP Native, and frameworks like Laravel and Yil2. On the client side, I am proficient in Javascript with Typescript and Angular. Additionally, I have experience with frontend frameworks such as Tailwind and Bootstrap, accumulated over more than two years of professional work and various projects.",
+  "stats": [
+    { "number": "2+", "label": "Years Experience" },
+    { "number": "5+", "label": "Technologies" }
+  ],
+  "skills": {
+    "backend": ["Golang", "PHP Native", "Laravel", "Yii2"],
+    "frontend": ["JavaScript", "TypeScript", "Angular", "Tailwind", "Bootstrap"]
+  },
+  "facts": [
+    { "icon": "🎓", "text": "Informatics Engineering Graduate" },
+    { "icon": "🏆", "text": "Cum Laude Honors" },
+    { "icon": "🌐", "text": "Full-Stack Developer" },
+    { "icon": "💼", "text": "Active in Campus Organizations" }
+  ]
+}

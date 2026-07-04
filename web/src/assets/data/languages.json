@@ -1,0 +1,6 @@
+[
+  {"name": "English", "level": "Intermediate", "icon": "🇺🇸"},
+  {"name": "Indonesian", "level": "Native", "icon": "🇮🇩"},
+  {"name": "Japanese", "level": "Basic", "icon": "🇯🇵"},
+  {"name": "German", "level": "Basic", "icon": "🇩🇪"}
+]

@@ -1,0 +1,96 @@
+<div class="admin-topbar">
+  <h1>Projects</h1>
+  @if (selectedUserID()) { <button class="btn btn-primary" (click)="startCreate()">+ New project</button> }
+</div>
+
+<div class="admin-card">
+  <div class="form-group" style="max-width:340px;margin:0">
+    <label>Developer</label>
+    <select class="form-control" [ngModel]="selectedUserID()" (ngModelChange)="selectDeveloper($event)">
+      @for (dev of developers(); track dev.userID) {
+        <option [ngValue]="dev.userID">{{ dev.fullName }} (/{{ dev.username }})</option>
+      }
+    </select>
+  </div>
+</div>
+
+@if (showForm()) {
+  <div class="admin-card">
+    <h3 style="margin-bottom:1rem">{{ editingId() ? 'Edit project' : 'New project' }}</h3>
+    @if (error()) { <div class="alert alert-error">{{ error() }}</div> }
+    <div class="form-row">
+      <div class="form-group"><label>Title</label><input class="form-control" [(ngModel)]="form.title" /></div>
+      <div class="form-group"><label>Client</label><input class="form-control" [(ngModel)]="form.client" /></div>
+    </div>
+    <div class="form-group"><label>Summary (card)</label><input class="form-control" [(ngModel)]="form.summary" /></div>
+    <div class="form-group"><label>Body / detailed description</label><textarea class="form-control" [(ngModel)]="form.body" style="min-height:160px"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Live link</label><input class="form-control" [(ngModel)]="form.projectLink" /></div>
+      <div class="form-group"><label>Repo link</label><input class="form-control" [(ngModel)]="form.repoLink" /></div>
+    </div>
+    <div class="form-group"><label>Features (one per line)</label><textarea class="form-control" [(ngModel)]="form.features"></textarea></div>
+    <div class="form-group"><label>Technologies (comma separated)</label><input class="form-control" [(ngModel)]="form.technologies" /></div>
+    <div class="form-row">
+      <div class="form-group"><label>Status</label>
+        <select class="form-control" [(ngModel)]="form.projectStatusID">
+          <option [ngValue]="null">—</option>
+          @for (s of statuses; track s.id) { <option [ngValue]="s.id">{{ s.name }}</option> }
+        </select>
+      </div>
+      <div class="form-group"><label>Featured</label>
+        <select class="form-control" [(ngModel)]="form.isFeatured">
+          <option [ngValue]="false">No</option>
+          <option [ngValue]="true">Yes</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Order</label><input class="form-control" type="number" [(ngModel)]="form.orderNo" /></div>
+    </div>
+    <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+      <button class="btn btn-primary" (click)="save()" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save' }}</button>
+      <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    </div>
+    <p class="muted" style="margin-top:0.75rem">Save first, then add thumbnail and gallery images from the list below.</p>
+  </div>
+}
+
+<div class="admin-card">
+  @for (project of projects(); track project.projectID) {
+    <div class="proj-row">
+      <div class="proj-row-thumb">
+        @if (project.thumbnailUrl) { <img [src]="project.thumbnailUrl" alt="" /> }
+        @else { <span class="muted">No image</span> }
+      </div>
+      <div class="proj-row-main">
+        <strong>{{ project.title }}</strong>
+        @if (project.isFeatured) { <span class="chip chip-accent">Featured</span> }
+        <p class="muted">{{ project.summary }}</p>
+        <div class="gallery-strip">
+          @for (image of project.images; track image.projectImageID) {
+            <div class="gthumb">
+              <img [src]="image.url" alt="" />
+              <button (click)="deleteImage(project, image.projectImageID)">×</button>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary btn-sm" (click)="startEdit(project)">Edit</button>
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer">Thumb<input type="file" accept="image/*" hidden (change)="uploadThumb(project, $event)" /></label>
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer">+ Image<input type="file" accept="image/*" hidden (change)="addImage(project, $event)" /></label>
+        <button class="btn btn-danger btn-sm" (click)="remove(project)">Delete</button>
+      </div>
+    </div>
+  }
+  @if (projects().length === 0) { <p class="muted">No projects for this developer yet.</p> }
+</div>
+
+<style>
+  .proj-row { display: grid; grid-template-columns: 120px 1fr auto; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .proj-row-thumb { width: 120px; height: 80px; border-radius: 8px; overflow: hidden; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; }
+  .proj-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .proj-row .actions { flex-direction: column; }
+  .gallery-strip { display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+  .gthumb { position: relative; width: 56px; height: 42px; border-radius: 6px; overflow: hidden; }
+  .gthumb img { width: 100%; height: 100%; object-fit: cover; }
+  .gthumb button { position: absolute; top: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; border: 0; cursor: pointer; width: 18px; height: 18px; line-height: 1; }
+</style>
