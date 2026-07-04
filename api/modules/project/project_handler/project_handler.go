@@ -23,6 +23,8 @@ type ProjectHandler interface {
 	UploadThumbnail(c *gin.Context)
 	AddImage(c *gin.Context)
 	DeleteImage(c *gin.Context)
+	AddFeatureImage(c *gin.Context)
+	DeleteFeatureImage(c *gin.Context)
 }
 
 type projectHandlerImpl struct {
@@ -171,4 +173,36 @@ func (h *projectHandlerImpl) DeleteImage(c *gin.Context) {
 		return
 	}
 	http_helper.SuccessResponse(c, constants.EC_SUCCESS, "Image deleted", nil)
+}
+
+func (h *projectHandlerImpl) AddFeatureImage(c *gin.Context) {
+	featureID, err := strconv.Atoi(c.Param("featureID"))
+	if err != nil {
+		http_helper.HttpErrorResponse(c, error_helper.Validation("invalid feature id"))
+		return
+	}
+	fileHeader, err := c.FormFile("file")
+	if err != nil {
+		http_helper.HttpErrorResponse(c, error_helper.Validation("file is required"))
+		return
+	}
+	result, err := h.service.AddFeatureImage(featureID, fileHeader, c.PostForm("caption"))
+	if err != nil {
+		http_helper.HttpErrorResponse(c, err)
+		return
+	}
+	http_helper.SuccessResponse(c, constants.EC_CREATED, "Feature image added", result)
+}
+
+func (h *projectHandlerImpl) DeleteFeatureImage(c *gin.Context) {
+	imageID, err := strconv.Atoi(c.Param("imageID"))
+	if err != nil {
+		http_helper.HttpErrorResponse(c, error_helper.Validation("invalid image id"))
+		return
+	}
+	if err := h.service.DeleteFeatureImage(imageID); err != nil {
+		http_helper.HttpErrorResponse(c, err)
+		return
+	}
+	http_helper.SuccessResponse(c, constants.EC_SUCCESS, "Feature image deleted", nil)
 }

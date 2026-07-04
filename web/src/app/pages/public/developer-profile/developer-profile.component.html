@@ -190,14 +190,16 @@
         <div class="dp-project-grid">
           @for (project of p.projects; track project.projectID) {
             <article class="dp-project-card">
-              <div class="dp-project-thumb">
-                @if (project.thumbnailUrl) {
-                  <img [src]="project.thumbnailUrl" [alt]="project.title" loading="lazy" />
-                } @else {
-                  <div class="dp-project-thumb-fallback"><app-icon name="code" [size]="32" /></div>
-                }
-                @if (project.isFeatured) { <span class="dp-featured-badge">Featured</span> }
-              </div>
+              <a class="dp-project-card-link" [routerLink]="['/', p.developer.username, 'projects', project.projectID]">
+                <div class="dp-project-thumb">
+                  @if (project.thumbnailUrl) {
+                    <img [src]="project.thumbnailUrl" [alt]="project.title" loading="lazy" />
+                  } @else {
+                    <div class="dp-project-thumb-fallback"><app-icon name="code" [size]="32" /></div>
+                  }
+                  @if (project.isFeatured) { <span class="dp-featured-badge">Featured</span> }
+                </div>
+              </a>
               <div class="dp-project-body">
                 <h3>{{ project.title }}</h3>
                 @if (project.client) {
@@ -222,9 +224,45 @@
                       Code <app-icon name="github" [size]="13" />
                     </a>
                   }
+                  <a class="btn btn-ghost btn-sm dp-detail-link"
+                     [routerLink]="['/', p.developer.username, 'projects', project.projectID]">
+                    Details <app-icon name="arrow" [size]="12" />
+                  </a>
                 </div>
               </div>
             </article>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- ── PROFESSIONAL PROJECTS ────────────────────────── -->
+  @if (p.professionalProjects.length) {
+    <section id="professional-projects" class="dp-section">
+      <div class="container">
+        <span class="eyebrow">At Companies</span>
+        <h2 class="dp-section-heading">Professional Projects</h2>
+        <p class="dp-section-sub">Products and systems built during professional engagements.</p>
+        <div class="dp-pp-grid">
+          @for (proj of p.professionalProjects; track proj.professionalProjectID) {
+            <a class="dp-pp-card" [routerLink]="['/', p.developer.username, 'professional-projects', proj.professionalProjectID]">
+              <div class="dp-pp-thumb">
+                @if (proj.thumbnailUrl) {
+                  <img [src]="proj.thumbnailUrl" [alt]="proj.title" loading="lazy" />
+                } @else {
+                  <div class="dp-pp-thumb-fallback"><app-icon name="code" [size]="28" /></div>
+                }
+              </div>
+              <div class="dp-pp-body">
+                <span class="dp-pp-company">{{ proj.company }}</span>
+                <h3 class="dp-pp-title">{{ proj.title }}</h3>
+                @if (proj.summary) {
+                  <p class="dp-pp-summary">{{ proj.summary }}</p>
+                }
+                <span class="dp-pp-cta">View project <app-icon name="arrow" [size]="13" /></span>
+              </div>
+            </a>
           }
         </div>
       </div>

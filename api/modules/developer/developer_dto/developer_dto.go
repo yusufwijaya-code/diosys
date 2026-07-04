@@ -4,6 +4,7 @@ import (
 	"portfolio-api/modules/certificate/certificate_model"
 	"portfolio-api/modules/education/education_dto"
 	"portfolio-api/modules/experience/experience_dto"
+	"portfolio-api/modules/professional_project/professional_project_dto"
 	"portfolio-api/modules/project/project_dto"
 	"portfolio-api/modules/skill/skill_model"
 	"portfolio-api/modules/summary/summary_dto"
@@ -63,11 +64,12 @@ type DeveloperRequest struct {
 
 // DeveloperProfileResponse is the aggregated public profile page payload.
 type DeveloperProfileResponse struct {
-	Developer    DeveloperResponse                   `json:"developer"`
-	Summary      summary_dto.SummaryResponse         `json:"summary"`
-	Experiences  []experience_dto.ExperienceResponse `json:"experiences"`
-	Educations   []education_dto.EducationResponse   `json:"educations"`
-	Certificates []certificate_model.Certificate     `json:"certificates"`
-	Skills       []skill_model.Skill                 `json:"skills"`
-	Projects     []project_dto.ProjectResponse       `json:"projects"`
+	Developer            DeveloperResponse                                          `json:"developer"`
+	Summary              summary_dto.SummaryResponse                                `json:"summary"`
+	Experiences          []experience_dto.ExperienceResponse                        `json:"experiences"`
+	Educations           []education_dto.EducationResponse                          `json:"educations"`
+	Certificates         []certificate_model.Certificate                            `json:"certificates"`
+	Skills               []skill_model.Skill                                        `json:"skills"`
+	Projects             []project_dto.ProjectResponse                              `json:"projects"`
+	ProfessionalProjects []professional_project_dto.ProfessionalProjectCardResponse `json:"professionalProjects"`
 }

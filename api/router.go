@@ -13,6 +13,7 @@ import (
 	"portfolio-api/modules/experience"
 	"portfolio-api/modules/message"
 	"portfolio-api/modules/pricing"
+	"portfolio-api/modules/professional_project"
 	"portfolio-api/modules/project"
 	"portfolio-api/modules/service"
 	"portfolio-api/modules/setting"
@@ -62,6 +63,7 @@ func SetupRouter(
 	certificate.Router(cmsDevelopers, db)
 	skill.Router(cmsDevelopers, db)
 	project.Router(public, cmsDevelopers, db, gdriveClient)
+	professional_project.Router(public, cmsDevelopers, db, gdriveClient)
 
 	// Agency-level endpoints.
 	service.Router(public, protected, db)

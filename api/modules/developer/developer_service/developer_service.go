@@ -11,6 +11,7 @@ import (
 	"portfolio-api/modules/developer/developer_dto"
 	"portfolio-api/modules/education/education_service"
 	"portfolio-api/modules/experience/experience_service"
+	"portfolio-api/modules/professional_project/professional_project_service"
 	"portfolio-api/modules/project/project_service"
 	"portfolio-api/modules/skill/skill_service"
 	"portfolio-api/modules/summary/summary_service"
@@ -34,14 +35,15 @@ type DeveloperService interface {
 }
 
 type developerServiceImpl struct {
-	userRepository     user_repository.UserRepository
-	summaryService     summary_service.SummaryService
-	experienceService  experience_service.ExperienceService
-	educationService   education_service.EducationService
-	certificateService certificate_service.CertificateService
-	skillService       skill_service.SkillService
-	projectService     project_service.ProjectService
-	gdrive             *gdrive_helper.Client
+	userRepository              user_repository.UserRepository
+	summaryService              summary_service.SummaryService
+	experienceService           experience_service.ExperienceService
+	educationService            education_service.EducationService
+	certificateService          certificate_service.CertificateService
+	skillService                skill_service.SkillService
+	projectService              project_service.ProjectService
+	professionalProjectService  professional_project_service.ProfessionalProjectService
+	gdrive                      *gdrive_helper.Client
 }
 
 // NewDeveloperService builds a DeveloperService.
@@ -53,17 +55,19 @@ func NewDeveloperService(
 	certificateService certificate_service.CertificateService,
 	skillService skill_service.SkillService,
 	projectService project_service.ProjectService,
+	professionalProjectService professional_project_service.ProfessionalProjectService,
 	gdrive *gdrive_helper.Client,
 ) DeveloperService {
 	return &developerServiceImpl{
-		userRepository:     userRepository,
-		summaryService:     summaryService,
-		experienceService:  experienceService,
-		educationService:   educationService,
-		certificateService: certificateService,
-		skillService:       skillService,
-		projectService:     projectService,
-		gdrive:             gdrive,
+		userRepository:             userRepository,
+		summaryService:             summaryService,
+		experienceService:          experienceService,
+		educationService:           educationService,
+		certificateService:         certificateService,
+		skillService:               skillService,
+		projectService:             projectService,
+		professionalProjectService: professionalProjectService,
+		gdrive:                     gdrive,
 	}
 }
 
@@ -144,15 +148,20 @@ func (s *developerServiceImpl) GetProfileByUsername(username string) (developer_
 	if err != nil {
 		return developer_dto.DeveloperProfileResponse{}, err
 	}
+	professionalProjects, err := s.professionalProjectService.GetByUser(user.UserID)
+	if err != nil {
+		return developer_dto.DeveloperProfileResponse{}, err
+	}
 
 	return developer_dto.DeveloperProfileResponse{
-		Developer:    s.mapToResponse(user),
-		Summary:      summary,
-		Experiences:  experiences,
-		Educations:   educations,
-		Certificates: certificates,
-		Skills:       skills,
-		Projects:     projects,
+		Developer:            s.mapToResponse(user),
+		Summary:              summary,
+		Experiences:          experiences,
+		Educations:           educations,
+		Certificates:         certificates,
+		Skills:               skills,
+		Projects:             projects,
+		ProfessionalProjects: professionalProjects,
 	}, nil
 }
 

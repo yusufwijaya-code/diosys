@@ -15,7 +15,13 @@ import {
   Experience,
   ExperienceRequest,
   MessageStatusRequest,
+  ProfessionalProject,
+  ProfessionalProjectCard,
+  ProfessionalProjectFeature,
+  ProfessionalProjectRequest,
+  ProjectFeatureRequest,
   Project,
+  ProjectFeatureItem,
   ProjectRequest,
   Service,
   ServiceRequest,
@@ -75,6 +81,34 @@ export class CmsService {
     const fd = new FormData();
     fd.append('file', file);
     return this.api.post<Developer>(`/cms/developers/${userID}/cv`, fd);
+  }
+
+  // ---------- Professional projects ----------
+  getProfessionalProjects(userID: number): Observable<ProfessionalProjectCard[]> {
+    return this.api.get<ProfessionalProjectCard[]>(`/cms/developers/${userID}/professional-projects`);
+  }
+  createProfessionalProject(userID: number, body: ProfessionalProjectRequest): Observable<ProfessionalProject> {
+    return this.api.post<ProfessionalProject>(`/cms/developers/${userID}/professional-projects`, body);
+  }
+  deleteProfessionalProject(userID: number, projectID: number): Observable<unknown> {
+    return this.api.delete<unknown>(`/cms/developers/${userID}/professional-projects/${projectID}`);
+  }
+  uploadProfessionalProjectThumbnail(userID: number, projectID: number, file: File): Observable<ProfessionalProject> {
+    return this.api.upload<ProfessionalProject>(`/cms/developers/${userID}/professional-projects/${projectID}/thumbnail`, file);
+  }
+  addProfessionalProjectFeature(userID: number, projectID: number, body: ProjectFeatureRequest): Observable<ProfessionalProject> {
+    return this.api.post<ProfessionalProject>(`/cms/developers/${userID}/professional-projects/${projectID}/features`, body);
+  }
+  deleteProfessionalProjectFeature(userID: number, projectID: number, featureID: number): Observable<unknown> {
+    return this.api.delete<unknown>(`/cms/developers/${userID}/professional-projects/${projectID}/features/${featureID}`);
+  }
+  addFeatureImage(userID: number, projectID: number, featureID: number, file: File, caption: string): Observable<ProfessionalProjectFeature> {
+    return this.api.uploadWithFields<ProfessionalProjectFeature>(
+      `/cms/developers/${userID}/professional-projects/${projectID}/features/${featureID}/images`,
+      file, { caption });
+  }
+  deleteFeatureImage(userID: number, projectID: number, featureID: number, imageID: number): Observable<unknown> {
+    return this.api.delete<unknown>(`/cms/developers/${userID}/professional-projects/${projectID}/features/${featureID}/images/${imageID}`);
   }
 
   getEducations(userID: number): Observable<Education[]> {
@@ -142,6 +176,18 @@ export class CmsService {
   deleteProjectImage(userID: number, id: number, imageID: number): Observable<unknown> {
     return this.api.delete<unknown>(
       `/cms/developers/${userID}/projects/${id}/images/${imageID}`
+    );
+  }
+  addProjectFeatureImage(userID: number, projectID: number, featureID: number, file: File, caption: string): Observable<Project> {
+    return this.api.uploadWithFields<Project>(
+      `/cms/developers/${userID}/projects/${projectID}/features/${featureID}/images`,
+      file,
+      { caption }
+    );
+  }
+  deleteProjectFeatureImage(userID: number, projectID: number, featureID: number, imageID: number): Observable<unknown> {
+    return this.api.delete<unknown>(
+      `/cms/developers/${userID}/projects/${projectID}/features/${featureID}/images/${imageID}`
     );
   }
 

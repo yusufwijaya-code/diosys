@@ -25,6 +25,8 @@ type ProjectService interface {
 	UploadThumbnail(projectID int, fileHeader *multipart.FileHeader) (project_dto.ProjectResponse, error)
 	AddImage(projectID int, fileHeader *multipart.FileHeader, caption string) (project_dto.ProjectResponse, error)
 	DeleteImage(projectImageID int) error
+	AddFeatureImage(projectFeatureID int, fileHeader *multipart.FileHeader, caption string) (project_dto.ProjectResponse, error)
+	DeleteFeatureImage(projectFeatureImageID int) error
 }
 
 type projectServiceImpl struct {
@@ -51,9 +53,28 @@ func (s *projectServiceImpl) buildResponse(project project_model.Project, ownerU
 		return project_dto.ProjectResponse{}, error_helper.Internal(err)
 	}
 
-	featureTexts := make([]string, 0, len(features))
+	featureResponses := make([]project_dto.ProjectFeatureResponse, 0, len(features))
 	for _, feature := range features {
-		featureTexts = append(featureTexts, feature.Text)
+		featureImages, err := s.repository.GetFeatureImages(feature.ProjectFeatureID)
+		if err != nil {
+			return project_dto.ProjectResponse{}, error_helper.Internal(err)
+		}
+		imgResponses := make([]project_dto.ProjectFeatureImageResponse, 0, len(featureImages))
+		for _, img := range featureImages {
+			imgResponses = append(imgResponses, project_dto.ProjectFeatureImageResponse{
+				ProjectFeatureImageID: img.ProjectFeatureImageID,
+				Url:                   gdrive_helper.PublicURL(img.GdriveID),
+				Caption:               img.Caption.String,
+				OrderNo:               img.OrderNo,
+			})
+		}
+		featureResponses = append(featureResponses, project_dto.ProjectFeatureResponse{
+			ProjectFeatureID: feature.ProjectFeatureID,
+			Text:             feature.Text,
+			Description:      feature.Description.String,
+			Images:           imgResponses,
+			OrderNo:          feature.OrderNo,
+		})
 	}
 	technologyNames := make([]string, 0, len(technologies))
 	for _, technology := range technologies {
@@ -94,7 +115,7 @@ func (s *projectServiceImpl) buildResponse(project project_model.Project, ownerU
 		ThumbnailGdriveID: project.ThumbnailGdriveID.String,
 		ThumbnailUrl:      gdrive_helper.PublicURL(project.ThumbnailGdriveID.String),
 		OrderNo:           project.OrderNo,
-		Features:          featureTexts,
+		Features:          featureResponses,
 		Technologies:      technologyNames,
 		Images:            imageResponses,
 	}, nil
@@ -270,6 +291,48 @@ func (s *projectServiceImpl) DeleteImage(projectImageID int) error {
 
 	if s.gdrive != nil && image.GdriveID.Valid && image.GdriveID.String != "" {
 		_ = s.gdrive.DeleteFile(image.GdriveID.String)
+	}
+	return nil
+}
+
+func (s *projectServiceImpl) AddFeatureImage(projectFeatureID int, fileHeader *multipart.FileHeader, caption string) (project_dto.ProjectResponse, error) {
+	if s.gdrive == nil {
+		return project_dto.ProjectResponse{}, error_helper.Internal(errors.New("google drive is not configured"))
+	}
+	feature, err := s.repository.FindFeatureByID(projectFeatureID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return project_dto.ProjectResponse{}, error_helper.NotFound("feature not found")
+		}
+		return project_dto.ProjectResponse{}, error_helper.Internal(err)
+	}
+	uploaded, err := s.gdrive.UploadImage(fileHeader, "project-feature")
+	if err != nil {
+		return project_dto.ProjectResponse{}, error_helper.Internal(err)
+	}
+	existing, _ := s.repository.GetFeatureImages(projectFeatureID)
+	if _, err := s.repository.AddFeatureImage(project_model.ProjectFeatureImage{
+		ProjectFeatureID: projectFeatureID,
+		GdriveID:         uploaded.GdriveID,
+		FileName:         uploaded.FileName,
+		Caption:          null.NewString(caption, caption != ""),
+		OrderNo:          len(existing),
+	}); err != nil {
+		return project_dto.ProjectResponse{}, error_helper.Internal(err)
+	}
+	return s.GetByID(feature.ProjectID)
+}
+
+func (s *projectServiceImpl) DeleteFeatureImage(projectFeatureImageID int) error {
+	img, err := s.repository.DeleteFeatureImage(projectFeatureImageID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return error_helper.NotFound("image not found")
+		}
+		return error_helper.Internal(err)
+	}
+	if s.gdrive != nil && img.GdriveID != "" {
+		_ = s.gdrive.DeleteFile(img.GdriveID)
 	}
 	return nil
 }

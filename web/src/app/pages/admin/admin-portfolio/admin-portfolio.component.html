@@ -104,6 +104,93 @@
   <button class="btn btn-primary btn-sm" (click)="addCertificate()">+ Add certificate</button>
 </div>
 
+<!-- Professional Projects -->
+<div class="admin-card">
+  <h3 style="margin-bottom:1rem">Professional Projects</h3>
+
+  @for (proj of professionalProjects(); track proj.professionalProjectID) {
+    <div style="border:1px solid var(--border);border-radius:8px;padding:1.25rem;margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1rem">
+        <div>
+          <strong>{{ proj.title }}</strong>
+          <span class="muted" style="margin-left:0.5rem">@ {{ proj.company }}</span>
+          @if (proj.summary) { <p class="muted" style="margin-top:0.25rem;font-size:0.85rem">{{ proj.summary }}</p> }
+        </div>
+        <button class="btn btn-danger btn-sm" (click)="deleteProfessionalProject(proj.professionalProjectID)">Delete</button>
+      </div>
+
+      <!-- Thumbnail -->
+      <div style="margin-bottom:1rem">
+        @if (proj.thumbnailUrl) {
+          <img [src]="proj.thumbnailUrl" style="height:80px;border-radius:6px;object-fit:cover;margin-bottom:0.5rem;display:block" alt="" />
+        }
+        <label style="font-size:0.82rem;color:var(--text-secondary)">Upload thumbnail</label>
+        <input type="file" accept="image/*" style="display:block;margin-top:0.25rem" (change)="onPPThumbnail(proj.professionalProjectID, $event)" />
+      </div>
+
+      <!-- Features -->
+      <div style="margin-bottom:0.75rem">
+        <strong style="font-size:0.9rem">Features</strong>
+        @for (feat of proj.features; track feat.featureID) {
+          <div style="margin-top:0.75rem;padding:0.75rem;background:var(--bg-elevated);border-radius:6px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <strong style="font-size:0.9rem">{{ feat.title }}</strong>
+                @if (feat.description) { <p class="muted" style="font-size:0.82rem;margin-top:0.2rem">{{ feat.description }}</p> }
+              </div>
+              <button class="btn btn-danger btn-sm" (click)="deleteFeature(proj, feat.featureID)">×</button>
+            </div>
+
+            <!-- Feature images -->
+            @if (feat.images.length) {
+              <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem">
+                @for (img of feat.images; track img.featureImageID) {
+                  <div style="position:relative">
+                    <img [src]="img.url" style="height:60px;width:90px;object-fit:cover;border-radius:4px;display:block" />
+                    <button class="btn btn-danger btn-sm"
+                      style="position:absolute;top:-6px;right:-6px;padding:0 5px;font-size:0.7rem;line-height:1.4"
+                      (click)="deleteFeatureImage(proj, feat.featureID, img.featureImageID)">×</button>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Add image to feature -->
+            <div style="display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem;flex-wrap:wrap">
+              <input type="file" accept="image/*" style="font-size:0.82rem" (change)="onFeatureImageFile(feat.featureID, $event)" />
+              <input class="form-control" placeholder="Caption (optional)"
+                style="flex:1;min-width:140px;font-size:0.82rem"
+                [(ngModel)]="getFeatureImageForm(feat.featureID).caption" />
+              <button class="btn btn-secondary btn-sm" (click)="uploadFeatureImage(proj, feat.featureID)">Upload image</button>
+            </div>
+          </div>
+        }
+
+        <!-- Add feature form -->
+        <div style="margin-top:0.75rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+          <input class="form-control" placeholder="Feature title *" [(ngModel)]="getPPFeatureForm(proj.professionalProjectID).title" />
+          <input class="form-control" placeholder="Order no" type="number"
+            [(ngModel)]="getPPFeatureForm(proj.professionalProjectID).orderNo" />
+          <textarea class="form-control" placeholder="Description" style="grid-column:span 2"
+            [(ngModel)]="getPPFeatureForm(proj.professionalProjectID).description"></textarea>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:0.4rem" (click)="addFeature(proj)">+ Add feature</button>
+      </div>
+    </div>
+  }
+
+  <!-- Add project form -->
+  <div style="border-top:1px solid var(--border);padding-top:1rem;margin-top:0.5rem">
+    <div class="form-row">
+      <div class="form-group"><label>Title *</label><input class="form-control" [(ngModel)]="ppForm.title" /></div>
+      <div class="form-group"><label>Company *</label><input class="form-control" [(ngModel)]="ppForm.company" /></div>
+    </div>
+    <div class="form-group"><label>Summary</label><textarea class="form-control" [(ngModel)]="ppForm.summary"></textarea></div>
+    <div class="form-group"><label>Order no</label><input class="form-control" type="number" [(ngModel)]="ppForm.orderNo" /></div>
+    <button class="btn btn-primary btn-sm" (click)="addProfessionalProject()">+ Add professional project</button>
+  </div>
+</div>
+
 <!-- Skills -->
 <div class="admin-card">
   <h3 style="margin-bottom:1rem">Skills</h3>

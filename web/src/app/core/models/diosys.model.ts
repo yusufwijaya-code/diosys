@@ -49,6 +49,41 @@ export interface Summary {
   facts: SummaryFact[];
 }
 
+export interface ProfessionalProjectFeatureImage {
+  featureImageID: number;
+  url: string;
+  caption: string;
+  orderNo: number;
+}
+
+export interface ProfessionalProjectFeature {
+  featureID: number;
+  title: string;
+  description: string;
+  images: ProfessionalProjectFeatureImage[];
+  orderNo: number;
+}
+
+export interface ProfessionalProjectCard {
+  professionalProjectID: number;
+  title: string;
+  company: string;
+  summary: string;
+  thumbnailUrl: string;
+  orderNo: number;
+}
+
+export interface ProfessionalProject {
+  professionalProjectID: number;
+  userID: number;
+  title: string;
+  company: string;
+  summary: string;
+  thumbnailUrl: string;
+  features: ProfessionalProjectFeature[];
+  orderNo: number;
+}
+
 export interface Experience {
   experienceID: number;
   position: string;
@@ -96,6 +131,21 @@ export interface ProjectImage {
   displayOrder: number;
 }
 
+export interface ProjectFeatureImage {
+  projectFeatureImageID: number;
+  url: string;
+  caption: string;
+  orderNo: number;
+}
+
+export interface ProjectFeatureItem {
+  projectFeatureID: number;
+  text: string;
+  description: string;
+  images: ProjectFeatureImage[];
+  orderNo: number;
+}
+
 export interface Project {
   projectID: number;
   userID: number;
@@ -113,7 +163,7 @@ export interface Project {
   thumbnailGdriveID: string;
   thumbnailUrl: string;
   orderNo: number;
-  features: string[];
+  features: ProjectFeatureItem[];
   technologies: string[];
   images: ProjectImage[];
 }
@@ -126,6 +176,7 @@ export interface DeveloperProfile {
   certificates: Certificate[];
   skills: Skill[];
   projects: Project[];
+  professionalProjects: ProfessionalProjectCard[];
 }
 
 export interface Service {
@@ -224,6 +275,19 @@ export interface ExperienceRequest {
   orderNo: number;
   technologies: string[];
   responsibilities: string[];
+}
+
+export interface ProfessionalProjectRequest {
+  title: string;
+  company: string;
+  summary: string;
+  orderNo: number;
+}
+
+export interface ProjectFeatureRequest {
+  title: string;
+  description: string;
+  orderNo: number;
 }
 
 export interface EducationRequest {

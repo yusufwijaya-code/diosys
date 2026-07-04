@@ -10,6 +10,8 @@ import (
 	"portfolio-api/modules/education/education_service"
 	"portfolio-api/modules/experience/experience_repository"
 	"portfolio-api/modules/experience/experience_service"
+	"portfolio-api/modules/professional_project/professional_project_repository"
+	"portfolio-api/modules/professional_project/professional_project_service"
 	"portfolio-api/modules/project/project_repository"
 	"portfolio-api/modules/project/project_service"
 	"portfolio-api/modules/skill/skill_repository"
@@ -31,10 +33,13 @@ func Router(public *gin.RouterGroup, cmsDevelopers *gin.RouterGroup, db *sqlx.DB
 	certificateService := certificate_service.NewCertificateService(certificate_repository.NewCertificateRepository(db))
 	skillService := skill_service.NewSkillService(skill_repository.NewSkillRepository(db))
 	projectService := project_service.NewProjectService(project_repository.NewProjectRepository(db), gdrive)
+	profProjService := professional_project_service.NewProfessionalProjectService(
+		professional_project_repository.NewProfessionalProjectRepository(db), gdrive,
+	)
 
 	service := developer_service.NewDeveloperService(
 		userRepository, summaryService, experienceService, educationService,
-		certificateService, skillService, projectService, gdrive,
+		certificateService, skillService, projectService, profProjService, gdrive,
 	)
 	handler := developer_handler.NewDeveloperHandler(service)
 

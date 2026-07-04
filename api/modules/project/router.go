@@ -28,4 +28,6 @@ func Router(public *gin.RouterGroup, developers *gin.RouterGroup, db *sqlx.DB, g
 	developers.POST("/:userID/projects/:id/thumbnail", handler.UploadThumbnail)
 	developers.POST("/:userID/projects/:id/images", handler.AddImage)
 	developers.DELETE("/:userID/projects/:id/images/:imageID", handler.DeleteImage)
+	developers.POST("/:userID/projects/:id/features/:featureID/images", handler.AddFeatureImage)
+	developers.DELETE("/:userID/projects/:id/features/:featureID/images/:imageID", handler.DeleteFeatureImage)
 }

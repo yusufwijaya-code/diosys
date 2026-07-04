@@ -357,6 +357,20 @@
   &:hover { border-color: var(--border-strong); transform: translateY(-4px); }
 }
 
+.dp-project-card-link {
+  display: block;
+  text-decoration: none;
+  &:hover .dp-project-thumb img { transform: scale(1.05); }
+}
+
+.dp-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  app-icon { transition: transform 0.15s; }
+  &:hover app-icon { transform: translateX(3px); }
+}
+
 .dp-project-thumb {
   position: relative;
   height: 190px;
@@ -604,6 +618,96 @@
   font-weight: 500;
   transition: gap 0.15s;
   .dp-pw-card:hover & { gap: 0.55rem; }
+}
+
+/* ── Professional Projects ── */
+.dp-pp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.dp-pp-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  transition: border-color 0.18s, transform 0.18s;
+  &:hover { border-color: var(--accent); transform: translateY(-4px); }
+}
+
+.dp-pp-thumb {
+  position: relative;
+  height: 180px;
+  background: var(--bg-elevated);
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+}
+.dp-pp-card:hover .dp-pp-thumb img { transform: scale(1.05); }
+
+.dp-pp-thumb-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.dp-pp-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dp-pp-company {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.dp-pp-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.dp-pp-summary {
+  font-size: 0.87rem;
+  color: var(--text-tertiary);
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.6;
+}
+
+.dp-pp-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--accent);
+  margin-top: auto;
+  padding-top: 0.75rem;
+  transition: gap 0.15s;
+  .dp-pp-card:hover & { gap: 0.55rem; }
 }
 
 /* ── Contact ── */

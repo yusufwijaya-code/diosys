@@ -30,10 +30,21 @@ type Project struct {
 
 // ProjectFeature is a single feature bullet of a project.
 type ProjectFeature struct {
-	ProjectFeatureID int    `db:"projectFeatureID" json:"projectFeatureID"`
-	ProjectID        int    `db:"projectID"        json:"projectID"`
-	Text             string `db:"text"             json:"text"`
-	OrderNo          int    `db:"orderNo"          json:"orderNo"`
+	ProjectFeatureID int         `db:"projectFeatureID" json:"projectFeatureID"`
+	ProjectID        int         `db:"projectID"        json:"projectID"`
+	Text             string      `db:"text"             json:"text"`
+	Description      null.String `db:"description"      json:"description"`
+	OrderNo          int         `db:"orderNo"          json:"orderNo"`
+}
+
+// ProjectFeatureImage is a gallery image attached to a feature.
+type ProjectFeatureImage struct {
+	ProjectFeatureImageID int         `db:"projectFeatureImageID" json:"projectFeatureImageID"`
+	ProjectFeatureID      int         `db:"projectFeatureID"      json:"projectFeatureID"`
+	GdriveID              string      `db:"gdriveID"              json:"gdriveID"`
+	FileName              string      `db:"fileName"              json:"fileName"`
+	Caption               null.String `db:"caption"               json:"caption"`
+	OrderNo               int         `db:"orderNo"               json:"orderNo"`
 }
 
 // ProjectTechnology is a technology tag attached to a project.

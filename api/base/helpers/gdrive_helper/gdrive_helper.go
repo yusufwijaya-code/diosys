@@ -100,7 +100,7 @@ func PublicURL(gdriveID string) string {
 	if gdriveID == "" {
 		return ""
 	}
-	return fmt.Sprintf("https://drive.google.com/thumbnail?id=%s&sz=w1000", gdriveID)
+	return fmt.Sprintf("https://lh3.googleusercontent.com/d/%s", gdriveID)
 }
 
 // DownloadURL builds a direct download URL for any Google Drive file (e.g. PDF).

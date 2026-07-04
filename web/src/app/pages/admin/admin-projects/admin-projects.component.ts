@@ -91,7 +91,7 @@ export class AdminProjectsComponent implements OnInit {
       projectLink: project.projectLink, repoLink: project.repoLink,
       projectStatusID: project.projectStatusID, isFeatured: project.isFeatured,
       orderNo: project.orderNo,
-      features: project.features.join('\n'),
+      features: project.features.map(f => f.text).join('\n'),
       technologies: project.technologies.join(', '),
     };
     this.editingId.set(project.projectID);
@@ -141,5 +141,21 @@ export class AdminProjectsComponent implements OnInit {
     const userID = this.selectedUserID();
     if (!userID) return;
     this.cms.deleteProjectImage(userID, project.projectID, imageID).subscribe(() => this.loadProjects());
+  }
+
+  addFeatureImage(project: Project, featureID: number, event: Event): void {
+    const userID = this.selectedUserID();
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!userID || !file) return;
+    const caption = prompt('Image caption (optional):') || '';
+    this.cms.addProjectFeatureImage(userID, project.projectID, featureID, file, caption)
+      .subscribe(() => this.loadProjects());
+  }
+
+  deleteFeatureImage(project: Project, featureID: number, imageID: number): void {
+    const userID = this.selectedUserID();
+    if (!userID) return;
+    this.cms.deleteProjectFeatureImage(userID, project.projectID, featureID, imageID)
+      .subscribe(() => this.loadProjects());
   }
 }

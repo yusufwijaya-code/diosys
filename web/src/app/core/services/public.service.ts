@@ -8,6 +8,7 @@ import {
   DeveloperProfile,
   PricePlan,
   MessageRequest,
+  ProfessionalProject,
   Project,
   Service,
   SettingsMap,
@@ -36,6 +37,10 @@ export class PublicService {
 
   getProject(id: number): Observable<Project> {
     return this.api.get<Project>(`/public/projects/${id}`);
+  }
+
+  getProfessionalProject(id: number): Observable<ProfessionalProject> {
+    return this.api.get<ProfessionalProject>(`/public/professional-projects/${id}`);
   }
 
   getSettings(): Observable<SettingsMap> {

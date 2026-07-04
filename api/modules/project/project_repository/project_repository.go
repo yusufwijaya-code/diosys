@@ -16,6 +16,7 @@ type ProjectRepository interface {
 	FindByUser(userID int) ([]project_model.Project, error)
 	FindByID(projectID int) (project_model.Project, error)
 	GetFeatures(projectID int) ([]project_model.ProjectFeature, error)
+	FindFeatureByID(projectFeatureID int) (project_model.ProjectFeature, error)
 	GetTechnologies(projectID int) ([]project_model.ProjectTechnology, error)
 	GetImages(projectID int) ([]project_model.ProjectImage, error)
 	Create(project project_model.Project, features, technologies []string) (int, error)
@@ -25,6 +26,9 @@ type ProjectRepository interface {
 	AddImage(image project_model.ProjectImage) (int, error)
 	FindImageByID(projectImageID int) (project_model.ProjectImage, error)
 	DeleteImage(projectImageID int) error
+	GetFeatureImages(projectFeatureID int) ([]project_model.ProjectFeatureImage, error)
+	AddFeatureImage(image project_model.ProjectFeatureImage) (int, error)
+	DeleteFeatureImage(projectFeatureImageID int) (project_model.ProjectFeatureImage, error)
 }
 
 type projectRepositoryImpl struct {
@@ -66,10 +70,51 @@ func (r *projectRepositoryImpl) FindByID(projectID int) (project_model.Project, 
 
 func (r *projectRepositoryImpl) GetFeatures(projectID int) ([]project_model.ProjectFeature, error) {
 	features := []project_model.ProjectFeature{}
-	query := `SELECT projectFeatureID, projectID, text, orderNo FROM ms_project_feature
+	query := `SELECT projectFeatureID, projectID, text, description, orderNo FROM ms_project_feature
 		WHERE projectID = ? ORDER BY orderNo ASC, projectFeatureID ASC`
 	err := r.db.Select(&features, query, projectID)
 	return features, err
+}
+
+func (r *projectRepositoryImpl) FindFeatureByID(projectFeatureID int) (project_model.ProjectFeature, error) {
+	var f project_model.ProjectFeature
+	err := r.db.Get(&f,
+		`SELECT projectFeatureID, projectID, text, description, orderNo FROM ms_project_feature WHERE projectFeatureID = ? LIMIT 1`,
+		projectFeatureID)
+	return f, err
+}
+
+func (r *projectRepositoryImpl) GetFeatureImages(projectFeatureID int) ([]project_model.ProjectFeatureImage, error) {
+	rows := []project_model.ProjectFeatureImage{}
+	err := r.db.Select(&rows,
+		`SELECT projectFeatureImageID, projectFeatureID, gdriveID, fileName, caption, orderNo
+		 FROM ms_project_feature_image WHERE projectFeatureID = ? ORDER BY orderNo ASC, projectFeatureImageID ASC`,
+		projectFeatureID)
+	return rows, err
+}
+
+func (r *projectRepositoryImpl) AddFeatureImage(img project_model.ProjectFeatureImage) (int, error) {
+	result, err := r.db.Exec(
+		`INSERT INTO ms_project_feature_image (projectFeatureID, gdriveID, fileName, caption, orderNo) VALUES (?, ?, ?, ?, ?)`,
+		img.ProjectFeatureID, img.GdriveID, img.FileName, img.Caption, img.OrderNo)
+	if err != nil {
+		return 0, err
+	}
+	id, _ := result.LastInsertId()
+	return int(id), nil
+}
+
+func (r *projectRepositoryImpl) DeleteFeatureImage(projectFeatureImageID int) (project_model.ProjectFeatureImage, error) {
+	var img project_model.ProjectFeatureImage
+	err := r.db.Get(&img,
+		`SELECT projectFeatureImageID, projectFeatureID, gdriveID, fileName, caption, orderNo
+		 FROM ms_project_feature_image WHERE projectFeatureImageID = ? LIMIT 1`,
+		projectFeatureImageID)
+	if err != nil {
+		return img, err
+	}
+	_, err = r.db.Exec(`DELETE FROM ms_project_feature_image WHERE projectFeatureImageID = ?`, projectFeatureImageID)
+	return img, err
 }
 
 func (r *projectRepositoryImpl) GetTechnologies(projectID int) ([]project_model.ProjectTechnology, error) {

@@ -1,0 +1,82 @@
+@if (loading()) {
+  <div class="ppd-status container"><p class="muted">Loading…</p></div>
+}
+
+@if (notFound()) {
+  <div class="ppd-status container">
+    <h2>Project not found</h2>
+    <a class="btn btn-ghost" [routerLink]="['/', username]">Back to profile</a>
+  </div>
+}
+
+@if (project(); as proj) {
+  <!-- Hero -->
+  <section class="ppd-hero">
+    <div class="container">
+      <a class="ppd-back" [routerLink]="['/', username]" fragment="professional-projects">
+        <app-icon name="arrow" [size]="14" /> Back to profile
+      </a>
+
+      <div class="ppd-hero-grid">
+        <div class="ppd-hero-text">
+          <span class="eyebrow">{{ proj.company }}</span>
+          <h1 class="ppd-title">{{ proj.title }}</h1>
+          @if (proj.summary) {
+            <p class="ppd-summary">{{ proj.summary }}</p>
+          }
+        </div>
+        @if (proj.thumbnailUrl) {
+          <div class="ppd-hero-thumb">
+            <img [src]="proj.thumbnailUrl" [alt]="proj.title" />
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  @if (proj.features.length) {
+    <section class="ppd-features">
+      <div class="container">
+        <span class="eyebrow">What's Inside</span>
+        <h2 class="ppd-section-title">Key Features</h2>
+
+        <div class="ppd-feature-list">
+          @for (feature of proj.features; track feature.featureID) {
+            <article class="ppd-feature-card">
+              <div class="ppd-feature-num">{{ $index + 1 | number:'2.0-0' }}</div>
+              <div class="ppd-feature-body">
+                <h3 class="ppd-feature-title">{{ feature.title }}</h3>
+                @if (feature.description) {
+                  <p class="ppd-feature-desc">{{ feature.description }}</p>
+                }
+                @if (feature.images.length) {
+                  <div class="ppd-feature-images">
+                    @for (img of feature.images; track img.featureImageID) {
+                      <figure class="ppd-feature-fig">
+                        <img [src]="img.url" [alt]="img.caption || feature.title" loading="lazy" />
+                        @if (img.caption) {
+                          <figcaption>{{ img.caption }}</figcaption>
+                        }
+                      </figure>
+                    }
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- CTA -->
+  <section class="ppd-cta-section">
+    <div class="container ppd-cta">
+      <p class="muted">Want to build something like this?</p>
+      <a class="btn btn-primary" [routerLink]="['/', username]" fragment="contact">
+        Get in touch <app-icon name="arrow" [size]="16" />
+      </a>
+    </div>
+  </section>
+}

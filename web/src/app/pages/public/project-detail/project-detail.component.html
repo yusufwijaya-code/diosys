@@ -1,0 +1,136 @@
+@if (loading()) {
+  <div class="pd-status container"><p class="muted">Loading…</p></div>
+}
+
+@if (notFound()) {
+  <div class="pd-status container">
+    <h2>Project not found</h2>
+    <a class="btn btn-ghost" [routerLink]="['/', username]">Back to profile</a>
+  </div>
+}
+
+@if (project(); as proj) {
+  <!-- Hero -->
+  <section class="pd-hero">
+    <div class="container">
+      <a class="pd-back" [routerLink]="['/', username]" fragment="projects">
+        <app-icon name="arrow" [size]="14" /> Back to projects
+      </a>
+
+      <div class="pd-hero-grid">
+        <div class="pd-hero-text">
+          @if (proj.client) {
+            <span class="eyebrow">{{ proj.client }}</span>
+          }
+          <h1 class="pd-title">{{ proj.title }}</h1>
+          @if (proj.summary) {
+            <p class="pd-summary">{{ proj.summary }}</p>
+          }
+
+          <div class="pd-hero-actions">
+            @if (proj.projectLink) {
+              <a class="btn btn-primary" [href]="proj.projectLink" target="_blank" rel="noopener">
+                Live demo <app-icon name="external" [size]="15" />
+              </a>
+            }
+            @if (proj.repoLink) {
+              <a class="btn btn-secondary" [href]="proj.repoLink" target="_blank" rel="noopener">
+                View code <app-icon name="github" [size]="15" />
+              </a>
+            }
+          </div>
+        </div>
+
+        @if (proj.thumbnailUrl) {
+          <div class="pd-hero-thumb">
+            <img [src]="proj.thumbnailUrl" [alt]="proj.title" />
+            @if (proj.isFeatured) { <span class="pd-badge">Featured</span> }
+          </div>
+        }
+      </div>
+
+      @if (proj.technologies.length) {
+        <div class="pd-tech-row">
+          @for (tech of proj.technologies; track $index) {
+            <span class="chip">{{ tech }}</span>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Body -->
+  @if (proj.body) {
+    <section class="pd-section">
+      <div class="container">
+        <h2 class="pd-section-title">About the Project</h2>
+        <p class="pd-body">{{ proj.body }}</p>
+      </div>
+    </section>
+  }
+
+  <!-- Features -->
+  @if (proj.features.length) {
+    <section class="pd-section pd-alt">
+      <div class="container">
+        <span class="eyebrow">What's Inside</span>
+        <h2 class="pd-section-title">Key Features</h2>
+        <div class="pd-feature-list">
+          @for (feat of proj.features; track feat.projectFeatureID) {
+            <div class="pd-feature-card">
+              <span class="pd-feature-num">{{ $index + 1 | number:'2.0-0' }}</span>
+              <div class="pd-feature-body">
+                <p class="pd-feature-text">{{ feat.text }}</p>
+                @if (feat.description) {
+                  <p class="pd-feature-desc">{{ feat.description }}</p>
+                }
+                @if (feat.images.length) {
+                  <div class="pd-feature-images">
+                    @for (img of feat.images; track img.projectFeatureImageID) {
+                      <figure class="pd-feature-fig">
+                        <img [src]="img.url" [alt]="img.caption || feat.text" loading="lazy" />
+                        @if (img.caption) {
+                          <figcaption>{{ img.caption }}</figcaption>
+                        }
+                      </figure>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Gallery -->
+  @if (proj.images.length) {
+    <section class="pd-section">
+      <div class="container">
+        <span class="eyebrow">Screenshots</span>
+        <h2 class="pd-section-title">Gallery</h2>
+        <div class="pd-gallery">
+          @for (img of proj.images; track img.projectImageID) {
+            <figure class="pd-gallery-fig">
+              <img [src]="img.url" [alt]="img.caption || proj.title" loading="lazy" />
+              @if (img.caption) {
+                <figcaption>{{ img.caption }}</figcaption>
+              }
+            </figure>
+          }
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- CTA -->
+  <section class="pd-cta-section">
+    <div class="container pd-cta">
+      <p class="muted">Interested in building something like this?</p>
+      <a class="btn btn-primary" [routerLink]="['/', username]" fragment="contact">
+        Get in touch <app-icon name="arrow" [size]="16" />
+      </a>
+    </div>
+  </section>
+}

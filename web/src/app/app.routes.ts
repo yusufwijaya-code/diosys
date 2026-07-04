@@ -68,6 +68,20 @@ export const routes: Routes = [
           import('./pages/public/home/home.component').then((m) => m.HomeComponent),
       },
       {
+        path: ':username/projects/:projectID',
+        loadComponent: () =>
+          import('./pages/public/project-detail/project-detail.component').then(
+            (m) => m.ProjectDetailComponent
+          ),
+      },
+      {
+        path: ':username/professional-projects/:projectID',
+        loadComponent: () =>
+          import('./pages/public/professional-project-detail/professional-project-detail.component').then(
+            (m) => m.ProfessionalProjectDetailComponent
+          ),
+      },
+      {
         path: ':username',
         loadComponent: () =>
           import('./pages/public/developer-profile/developer-profile.component').then(
