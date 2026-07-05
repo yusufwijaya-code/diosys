@@ -1,5 +1,7 @@
-import { Component, HostListener, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, HostListener, OnDestroy, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -13,12 +15,12 @@ import { RouterLink } from '@angular/router';
         </a>
 
         <nav class="nav-links">
-          <a [routerLink]="['/']" fragment="services" (click)="close()">Services</a>
-          <a [routerLink]="['/']" fragment="work" (click)="close()">Work</a>
-          <a [routerLink]="['/']" fragment="developers" (click)="close()">Developers</a>
-          <a [routerLink]="['/']" fragment="pricing" (click)="close()">Pricing</a>
-          <a [routerLink]="['/']" fragment="contact" (click)="close()">Contact</a>
-          <a class="btn btn-primary btn-sm cta" [routerLink]="['/']" fragment="contact" (click)="close()">
+          <a href="/#services" [class.active]="activeSection() === 'services'" (click)="navClick('services', $event)">Services</a>
+          <a href="/#work" [class.active]="activeSection() === 'work'" (click)="navClick('work', $event)">Work</a>
+          <a href="/#developers" [class.active]="activeSection() === 'developers'" (click)="navClick('developers', $event)">Developers</a>
+          <a href="/#pricing" [class.active]="activeSection() === 'pricing'" (click)="navClick('pricing', $event)">Pricing</a>
+          <a href="/#contact" [class.active]="activeSection() === 'contact'" (click)="navClick('contact', $event)">Contact</a>
+          <a class="btn btn-primary btn-sm cta" href="/#contact" (click)="navClick('contact', $event)">
             Start a project
           </a>
         </nav>
@@ -51,9 +53,25 @@ import { RouterLink } from '@angular/router';
 
     /* Desktop links */
     .nav-links { display: flex; align-items: center; gap: 1.75rem; }
-    .nav-links a { color: var(--text-tertiary); font-size: 0.92rem; font-weight: 500; transition: color 0.15s; }
+    .nav-links a {
+      color: var(--text-tertiary); font-size: 0.92rem; font-weight: 500;
+      position: relative;
+    }
     .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a.active {
+      color: var(--text-primary);
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0; right: 0;
+        height: 2px;
+        background: var(--accent);
+        border-radius: 1px;
+      }
+    }
     .nav-links a.cta { color: #0b0d12; }
+    .nav-links a.cta::after { display: none; }
 
     /* Burger */
     .burger {
@@ -133,17 +151,96 @@ import { RouterLink } from '@angular/router';
         border-bottom: none;
         color: #0b0d12;
       }
+      .nav-links a.active {
+        color: var(--accent);
+        border-bottom-color: transparent;
+      }
     }
   `],
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnDestroy {
   scrolled = signal(false);
   menuOpen = signal(false);
+  activeSection = signal('');
+
+  private isHomePage = false;
+  private routerSub: Subscription;
+  private scrollTimer: ReturnType<typeof setTimeout> | null = null;
+  private suppressScroll = false;
+
+  private static readonly SECTION_IDS = ['services', 'work', 'developers', 'pricing', 'contact'];
+
+  constructor(private router: Router) {
+    this.routerSub = router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe((e: NavigationEnd) => {
+      const url = (e as NavigationEnd).urlAfterRedirects;
+      if (url === '/' || url.startsWith('/#')) {
+        this.isHomePage = true;
+        // Don't override if a nav click already set the section
+        if (!this.suppressScroll) this.updateActiveSection();
+      } else if (!url.startsWith('/admin')) {
+        this.isHomePage = false;
+        if (!this.suppressScroll) this.activeSection.set('developers');
+      } else {
+        this.isHomePage = false;
+        this.activeSection.set('');
+      }
+    });
+  }
 
   @HostListener('window:scroll')
   onScroll(): void {
     this.scrolled.set(window.scrollY > 20);
     if (this.menuOpen()) this.menuOpen.set(false);
+    if (this.isHomePage && !this.suppressScroll) {
+      this.updateActiveSection();
+    }
+  }
+
+  navClick(section: string, event: MouseEvent): void {
+    // Allow ctrl/cmd+click and middle-click to open in new tab normally
+    if (event.ctrlKey || event.metaKey || event.button === 1) return;
+    event.preventDefault();
+
+    this.menuOpen.set(false);
+    this.activeSection.set(section);
+    this.suppressScroll = true;
+    if (this.scrollTimer) clearTimeout(this.scrollTimer);
+
+    if (this.isHomePage) {
+      const el = document.getElementById(section);
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+      this.scrollTimer = setTimeout(() => {
+        this.suppressScroll = false;
+        this.updateActiveSection();
+      }, 900);
+    } else {
+      this.router.navigate(['/'], { fragment: section });
+      this.scrollTimer = setTimeout(() => { this.suppressScroll = false; }, 900);
+    }
+  }
+
+  private updateActiveSection(): void {
+    const threshold = 100;
+    let active = '';
+    for (const id of [...NavbarComponent.SECTION_IDS].reverse()) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      if (el.getBoundingClientRect().top <= threshold) {
+        active = id;
+        break;
+      }
+    }
+    this.activeSection.set(active);
+  }
+
+  ngOnDestroy(): void {
+    this.routerSub.unsubscribe();
+    if (this.scrollTimer) clearTimeout(this.scrollTimer);
   }
 
   toggle(): void {
