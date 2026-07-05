@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { IconComponent } from '../../../components/icon/icon.component';
-import { PhoneInputDirective } from '../../../core/directives/phone-input.directive';
+import { PhoneFieldComponent } from '../../../components/phone-field/phone-field.component';
 import { PublicService } from '../../../core/services/public.service';
 import {
   DeveloperCard,
@@ -20,7 +20,7 @@ import {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, RouterLink, IconComponent, PhoneInputDirective],
+  imports: [FormsModule, RouterLink, IconComponent, PhoneFieldComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -96,13 +96,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   submit(): void {
-    if (!this.form.clientName || !this.form.clientEmail || !this.form.messageBody) {
-      this.error.set('Please fill in your name, email, and message.');
+    if (!this.form.clientName || !this.form.clientEmail || !this.form.clientPhone || !this.form.messageBody) {
+      this.error.set('Please fill in all required fields.');
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.form.clientEmail)) {
       this.error.set('Please enter a valid email address.');
+      return;
+    }
+    if (this.form.clientPhone.replace(/[^0-9]/g, '').length < 5) {
+      this.error.set('Please enter a valid WhatsApp number.');
       return;
     }
     this.error.set('');

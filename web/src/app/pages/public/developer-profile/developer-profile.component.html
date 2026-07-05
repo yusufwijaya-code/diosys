@@ -446,8 +446,8 @@
           </div>
         </div>
         <div class="form-group">
-          <label>WhatsApp <span class="muted" style="font-size:0.82rem">(optional)</span></label>
-          <input class="form-control" name="clientPhone" [(ngModel)]="contactForm.clientPhone" placeholder="+6281234567890" appPhoneInput />
+          <label>WhatsApp</label>
+          <app-phone-field [(value)]="contactForm.clientPhone" />
         </div>
         <div class="form-group">
           <label>Subject</label>

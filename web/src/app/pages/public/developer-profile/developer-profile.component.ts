@@ -6,14 +6,14 @@ import { Title } from '@angular/platform-browser';
 
 import { IconComponent } from '../../../components/icon/icon.component';
 import { SpinnerComponent } from '../../../components/spinner/spinner.component';
-import { PhoneInputDirective } from '../../../core/directives/phone-input.directive';
+import { PhoneFieldComponent } from '../../../components/phone-field/phone-field.component';
 import { PublicService } from '../../../core/services/public.service';
 import { DeveloperProfile, MessageRequest, Skill } from '../../../core/models/diosys.model';
 
 @Component({
   selector: 'app-developer-profile',
   standalone: true,
-  imports: [RouterLink, IconComponent, SpinnerComponent, PhoneInputDirective, SlicePipe, FormsModule],
+  imports: [RouterLink, IconComponent, SpinnerComponent, PhoneFieldComponent, SlicePipe, FormsModule],
   templateUrl: './developer-profile.component.html',
   styleUrl: './developer-profile.component.scss',
 })
@@ -148,13 +148,17 @@ export class DeveloperProfileComponent implements OnInit, OnDestroy {
   }
 
   submitContact(): void {
-    if (!this.contactForm.clientName || !this.contactForm.clientEmail || !this.contactForm.messageBody) {
-      this.contactError.set('Please fill in your name, email, and message.');
+    if (!this.contactForm.clientName || !this.contactForm.clientEmail || !this.contactForm.clientPhone || !this.contactForm.messageBody) {
+      this.contactError.set('Please fill in all required fields.');
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.contactForm.clientEmail)) {
       this.contactError.set('Please enter a valid email address.');
+      return;
+    }
+    if (this.contactForm.clientPhone.replace(/[^0-9]/g, '').length < 5) {
+      this.contactError.set('Please enter a valid WhatsApp number.');
       return;
     }
     this.contactError.set('');
