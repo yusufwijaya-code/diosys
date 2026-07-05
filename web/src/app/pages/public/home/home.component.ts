@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { IconComponent } from '../../../components/icon/icon.component';
+import { PhoneInputDirective } from '../../../core/directives/phone-input.directive';
 import { PublicService } from '../../../core/services/public.service';
 import {
   DeveloperCard,
@@ -19,7 +20,7 @@ import {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, RouterLink, IconComponent],
+  imports: [FormsModule, RouterLink, IconComponent, PhoneInputDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

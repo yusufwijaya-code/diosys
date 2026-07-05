@@ -1,5 +1,7 @@
 @if (loading()) {
-  <div class="ppd-status container"><p class="muted">Loading…</p></div>
+  <div class="ppd-status container">
+    <app-spinner size="lg" minHeight="340px" />
+  </div>
 }
 
 @if (notFound()) {

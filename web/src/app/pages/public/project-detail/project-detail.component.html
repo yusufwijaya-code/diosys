@@ -1,5 +1,7 @@
 @if (loading()) {
-  <div class="pd-status container"><p class="muted">Loading…</p></div>
+  <div class="pd-status container">
+    <app-spinner size="lg" minHeight="340px" />
+  </div>
 }
 
 @if (notFound()) {
@@ -56,6 +58,10 @@
           }
         </div>
       }
+
+      <p class="pd-developer">
+        Built by <a [routerLink]="['/', proj.ownerUsername]">{{ proj.ownerFullName }}</a>
+      </p>
     </div>
   </section>
 

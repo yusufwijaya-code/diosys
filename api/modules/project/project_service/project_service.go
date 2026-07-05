@@ -156,14 +156,14 @@ func (s *projectServiceImpl) GetByUser(userID int) ([]project_dto.ProjectRespons
 }
 
 func (s *projectServiceImpl) GetByID(projectID int) (project_dto.ProjectResponse, error) {
-	project, err := s.repository.FindByID(projectID)
+	project, err := s.repository.FindByIDWithOwner(projectID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return project_dto.ProjectResponse{}, error_helper.NotFound("project not found")
 		}
 		return project_dto.ProjectResponse{}, error_helper.Internal(err)
 	}
-	return s.buildResponse(project, "", "")
+	return s.buildResponse(project.Project, project.OwnerUsername, project.OwnerFullName)
 }
 
 func (s *projectServiceImpl) Create(userID int, request project_dto.ProjectRequest) (project_dto.ProjectResponse, error) {

@@ -94,6 +94,19 @@
   margin-top: 1.5rem;
 }
 
+.pd-developer {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    &:hover { text-decoration: underline; }
+  }
+}
+
 /* Sections */
 .pd-section {
   padding: 5rem 0;

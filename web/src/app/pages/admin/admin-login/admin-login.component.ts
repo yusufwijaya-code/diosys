@@ -2,10 +2,12 @@ import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth.service';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
+  imports: [SpinnerComponent],
   template: `
     <div class="login-wrapper">
       <div class="login-card">
@@ -16,7 +18,7 @@ import { AuthService } from '../../../core/services/auth.service';
         @if (error()) { <div class="alert alert-error">{{ error() }}</div> }
 
         @if (loading()) {
-          <p class="muted">Signing in…</p>
+          <app-spinner size="md" minHeight="56px" />
         } @else {
           <button class="btn btn-primary btn-block gsignin" (click)="signIn()">
             <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">

@@ -4,13 +4,14 @@ import { DecimalPipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 
 import { IconComponent } from '../../../components/icon/icon.component';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 import { PublicService } from '../../../core/services/public.service';
 import { Project } from '../../../core/models/diosys.model';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [RouterLink, IconComponent, DecimalPipe],
+  imports: [RouterLink, IconComponent, SpinnerComponent, DecimalPipe],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.scss',
 })

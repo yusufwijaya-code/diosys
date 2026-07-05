@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
 import { IconComponent } from '../../../components/icon/icon.component';
+import { SpinnerComponent } from '../../../components/spinner/spinner.component';
+import { PhoneInputDirective } from '../../../core/directives/phone-input.directive';
 import { PublicService } from '../../../core/services/public.service';
 import { DeveloperProfile, MessageRequest, Skill } from '../../../core/models/diosys.model';
 
 @Component({
   selector: 'app-developer-profile',
   standalone: true,
-  imports: [RouterLink, IconComponent, SlicePipe, FormsModule],
+  imports: [RouterLink, IconComponent, SpinnerComponent, PhoneInputDirective, SlicePipe, FormsModule],
   templateUrl: './developer-profile.component.html',
   styleUrl: './developer-profile.component.scss',
 })
@@ -41,11 +43,13 @@ export class DeveloperProfileComponent implements OnInit, OnDestroy {
   private load(username: string): void {
     this.loading.set(true);
     this.notFound.set(false);
+    const fragment = this.route.snapshot.fragment;
     this.publicService.getDeveloperProfile(username).subscribe({
       next: (profile) => {
         this.profile.set(profile);
         this.loading.set(false);
         this.titleService.setTitle(`${profile.developer.fullName} — Diosys`);
+        if (fragment) setTimeout(() => this.scrollTo(fragment), 100);
       },
       error: () => {
         this.loading.set(false);
@@ -146,6 +150,11 @@ export class DeveloperProfileComponent implements OnInit, OnDestroy {
   submitContact(): void {
     if (!this.contactForm.clientName || !this.contactForm.clientEmail || !this.contactForm.messageBody) {
       this.contactError.set('Please fill in your name, email, and message.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.contactForm.clientEmail)) {
+      this.contactError.set('Please enter a valid email address.');
       return;
     }
     this.contactError.set('');

@@ -50,7 +50,7 @@
 
     <div class="work-grid">
       @for (project of projects(); track project.projectID) {
-        <a class="card work-card" [routerLink]="['/', project.ownerUsername]">
+        <a class="card work-card" [routerLink]="['/', project.ownerUsername, 'projects', project.projectID]">
           <div class="work-thumb">
             @if (project.thumbnailUrl) {
               <img [src]="project.thumbnailUrl" [alt]="project.title" loading="lazy" />
@@ -192,7 +192,7 @@
       </div>
       <div class="form-group">
         <label>WhatsApp<span class="muted"> (optional)</span></label>
-        <input class="form-control" type="tel" name="clientPhone" [(ngModel)]="form.clientPhone" placeholder="+62 812 3456 7890" />
+        <input class="form-control" type="tel" name="clientPhone" [(ngModel)]="form.clientPhone" placeholder="+6281234567890" appPhoneInput />
       </div>
       <div class="form-group">
         <label>Subject</label>

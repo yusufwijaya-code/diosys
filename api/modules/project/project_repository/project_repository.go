@@ -15,6 +15,7 @@ type ProjectRepository interface {
 	FindAllPublic() ([]project_model.ProjectWithOwner, error)
 	FindByUser(userID int) ([]project_model.Project, error)
 	FindByID(projectID int) (project_model.Project, error)
+	FindByIDWithOwner(projectID int) (project_model.ProjectWithOwner, error)
 	GetFeatures(projectID int) ([]project_model.ProjectFeature, error)
 	FindFeatureByID(projectFeatureID int) (project_model.ProjectFeature, error)
 	GetTechnologies(projectID int) ([]project_model.ProjectTechnology, error)
@@ -64,6 +65,18 @@ func (r *projectRepositoryImpl) FindByUser(userID int) ([]project_model.Project,
 func (r *projectRepositoryImpl) FindByID(projectID int) (project_model.Project, error) {
 	var project project_model.Project
 	query := `SELECT ` + projectColumns + ` FROM ms_project WHERE projectID = ? LIMIT 1`
+	err := r.db.Get(&project, query, projectID)
+	return project, err
+}
+
+func (r *projectRepositoryImpl) FindByIDWithOwner(projectID int) (project_model.ProjectWithOwner, error) {
+	var project project_model.ProjectWithOwner
+	query := `SELECT p.projectID, p.userID, p.title, p.summary, p.body, p.client, p.projectLink,
+		p.repoLink, p.projectStatusID, p.isFeatured, p.thumbnailFileName, p.thumbnailGdriveID,
+		p.orderNo, p.createdDate, p.editedDate, u.username AS ownerUsername, u.fullName AS ownerFullName
+		FROM ms_project p
+		INNER JOIN ms_user u ON u.userID = p.userID
+		WHERE p.projectID = ? LIMIT 1`
 	err := r.db.Get(&project, query, projectID)
 	return project, err
 }

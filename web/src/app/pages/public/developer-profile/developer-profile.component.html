@@ -1,5 +1,7 @@
 @if (loading()) {
-  <div class="dp-status container"><p class="muted">Loading profile…</p></div>
+  <div class="dp-status container">
+    <app-spinner size="lg" minHeight="340px" />
+  </div>
 }
 
 @if (notFound()) {
@@ -75,9 +77,14 @@
           </div>
         </div>
 
-        <!-- Right: photo + stat badge -->
+        <!-- Right: photo + stat badges -->
         <div class="dp-hero-right">
           <div class="dp-photo-wrap">
+            <!-- Arch backdrop -->
+            <div class="dp-photo-arch"></div>
+            <!-- Decorative dots -->
+            <div class="dp-photo-dots"></div>
+            <!-- Photo frame -->
             <div class="dp-photo-frame">
               @if (p.developer.photoUrl) {
                 <img [src]="p.developer.photoUrl" [alt]="p.developer.fullName" />
@@ -85,13 +92,19 @@
                 <span class="dp-photo-initial">{{ p.developer.fullName.charAt(0) }}</span>
               }
             </div>
-            @if (p.summary.stats.length) {
-              <div class="dp-stat-badge">
-                <span class="dp-stat-num">{{ p.summary.stats[0].number }}</span>
-                <span class="dp-stat-lbl">{{ p.summary.stats[0].label }}</span>
-              </div>
-            }
           </div>
+
+          @if (p.summary.stats.length) {
+            <div class="dp-stat-badges">
+              @for (stat of p.summary.stats.slice(0, 3); track $index) {
+                <div class="dp-stat-badge">
+                  <span class="dp-stat-num">{{ stat.number }}</span>
+                  <span class="dp-stat-lbl">{{ stat.label }}</span>
+                </div>
+              }
+            </div>
+          }
+
           @if (p.developer.location) {
             <p class="dp-location muted"><app-icon name="pin" [size]="13" /> {{ p.developer.location }}</p>
           }
@@ -431,6 +444,10 @@
             <label>Email</label>
             <input class="form-control" type="email" name="clientEmail" [(ngModel)]="contactForm.clientEmail" placeholder="you@company.com" />
           </div>
+        </div>
+        <div class="form-group">
+          <label>WhatsApp <span class="muted" style="font-size:0.82rem">(optional)</span></label>
+          <input class="form-control" name="clientPhone" [(ngModel)]="contactForm.clientPhone" placeholder="+6281234567890" appPhoneInput />
         </div>
         <div class="form-group">
           <label>Subject</label>
