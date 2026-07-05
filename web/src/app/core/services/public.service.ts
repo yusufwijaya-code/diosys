@@ -11,6 +11,7 @@ import {
   Project,
   Service,
   SettingsMap,
+  Testimonial,
 } from '../models/diosys.model';
 
 /** Read-only public data access for the Diosys website. */
@@ -44,6 +45,10 @@ export class PublicService {
 
   getSettings(): Observable<SettingsMap> {
     return this.api.get<SettingsMap>('/public/settings');
+  }
+
+  getTestimonials(): Observable<Testimonial[]> {
+    return this.api.get<Testimonial[]>('/public/testimonials');
   }
 
   sendContact(body: MessageRequest): Observable<ClientMessage> {

@@ -53,6 +53,11 @@ export const routes: Routes = [
           import('./pages/admin/admin-services/admin-services.component').then((m) => m.AdminServicesComponent),
       },
       {
+        path: 'testimonials',
+        loadComponent: () =>
+          import('./pages/admin/admin-testimonials/admin-testimonials.component').then((m) => m.AdminTestimonialsComponent),
+      },
+      {
         path: 'settings',
         loadComponent: () =>
           import('./pages/admin/admin-settings/admin-settings.component').then((m) => m.AdminSettingsComponent),

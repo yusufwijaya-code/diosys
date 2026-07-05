@@ -1,0 +1,149 @@
+<div class="cms-page">
+  <div class="cms-header">
+    <h1>Testimonials</h1>
+    @if (!showForm()) {
+      <button class="btn btn-primary btn-sm" (click)="startCreate()">+ Add testimonial</button>
+    }
+  </div>
+
+  @if (showForm()) {
+    <div class="card cms-form">
+      <h2>{{ editingId() ? 'Edit' : 'New' }} Testimonial</h2>
+      @if (error()) { <div class="alert alert-error">{{ error() }}</div> }
+
+      <!-- Photo -->
+      <div class="form-group">
+        <label>Client Photo</label>
+        <div class="photo-upload-row">
+          @if (photoPreview) {
+            <img class="photo-thumb" [src]="photoPreview" alt="preview" />
+          } @else {
+            <div class="photo-placeholder">No photo</div>
+          }
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer">
+            Choose file
+            <input type="file" accept="image/*" (change)="onFileChange($event)" style="display:none" />
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client Name *</label>
+          <input class="form-control" [(ngModel)]="form.clientName" placeholder="Jane Doe" />
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <input class="form-control" [(ngModel)]="form.clientRole" placeholder="CTO" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Company</label>
+          <input class="form-control" [(ngModel)]="form.clientCompany" placeholder="Acme Inc." />
+        </div>
+        <div class="form-group">
+          <label>Order No</label>
+          <input class="form-control" type="number" [(ngModel)]="form.orderNo" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Testimonial *</label>
+        <textarea class="form-control" rows="4" [(ngModel)]="form.testimonialText" placeholder="Write the client's feedback…"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Rating</label>
+        <div class="star-picker">
+          @for (s of stars; track s) {
+            <span [class.active]="s <= form.rating" (click)="setRating(s)">★</span>
+          }
+        </div>
+      </div>
+
+      <div class="form-group form-check">
+        <label>
+          <input type="checkbox" [(ngModel)]="form.flagActive" /> Active (visible on site)
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" (click)="save()" [disabled]="saving() || uploading()">
+          {{ saving() ? 'Saving…' : uploading() ? 'Uploading photo…' : 'Save' }}
+        </button>
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+  }
+
+  <div class="cms-list">
+    @for (t of items(); track t.testimonialID) {
+      <div class="card cms-item testi-item">
+        <div class="testi-item-avatar">
+          @if (t.photoUrl) {
+            <img [src]="t.photoUrl" [alt]="t.clientName" />
+          } @else {
+            <span>{{ t.clientName.charAt(0) }}</span>
+          }
+        </div>
+        <div class="testi-item-body">
+          <div class="testi-item-header">
+            <strong>{{ t.clientName }}</strong>
+            @if (t.clientRole || t.clientCompany) {
+              <span class="muted">{{ t.clientRole }}{{ t.clientRole && t.clientCompany ? ' · ' : '' }}{{ t.clientCompany }}</span>
+            }
+            <span class="testi-stars-sm">
+              @for (s of stars; track s) { <span [class.on]="s <= t.rating">★</span> }
+            </span>
+          </div>
+          <p class="testi-item-text">{{ t.testimonialText }}</p>
+          <span class="badge" [class.badge-on]="t.flagActive === 1" [class.badge-off]="t.flagActive !== 1">
+            {{ t.flagActive === 1 ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+        <div class="cms-item-actions">
+          <button class="btn btn-secondary btn-sm" (click)="startEdit(t)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="remove(t)">Delete</button>
+        </div>
+      </div>
+    }
+    @empty {
+      <p class="muted">No testimonials yet. Add the first one!</p>
+    }
+  </div>
+</div>
+
+<style>
+  .cms-page { padding: 2rem; max-width: 900px; }
+  .cms-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .cms-header h1 { font-size: 1.5rem; margin: 0; }
+  .cms-form { padding: 1.75rem; margin-bottom: 2rem; }
+  .cms-form h2 { font-size: 1.15rem; margin-bottom: 1.25rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+  .form-group label { font-size: 0.85rem; color: var(--text-secondary); }
+  .form-control { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.6rem 0.75rem; color: var(--text-primary); font-size: 0.9rem; font-family: inherit; width: 100%; }
+  .form-control:focus { outline: none; border-color: var(--accent); }
+  textarea.form-control { resize: vertical; }
+  .form-check label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; }
+  .form-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
+  .photo-upload-row { display: flex; align-items: center; gap: 1rem; }
+  .photo-thumb { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
+  .photo-placeholder { width: 64px; height: 64px; border-radius: 50%; background: var(--bg-elevated); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--text-secondary); }
+  .star-picker { display: flex; gap: 4px; font-size: 1.5rem; cursor: pointer; span { color: var(--border-strong); &.active { color: #fbbf24; } } }
+  .cms-list { display: flex; flex-direction: column; gap: 1rem; }
+  .testi-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; }
+  .testi-item-avatar { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--bg-elevated); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: var(--accent); img { width: 100%; height: 100%; object-fit: cover; } }
+  .testi-item-body { flex: 1; }
+  .testi-item-header { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.4rem; strong { font-size: 0.95rem; } }
+  .testi-stars-sm { span { font-size: 0.85rem; color: var(--border-strong); &.on { color: #fbbf24; } } }
+  .testi-item-text { font-size: 0.88rem; color: var(--text-secondary); margin: 0.35rem 0 0.5rem; line-height: 1.6; }
+  .badge { font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 999px; }
+  .badge-on { background: rgba(34,197,94,0.12); color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+  .badge-off { background: rgba(100,116,139,0.12); color: var(--text-secondary); border: 1px solid var(--border); }
+  .cms-item-actions { display: flex; flex-direction: column; gap: 0.4rem; flex-shrink: 0; }
+  .alert { padding: 0.75rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.875rem; }
+  .alert-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
+</style>

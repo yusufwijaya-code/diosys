@@ -13,6 +13,7 @@ import (
 	"portfolio-api/modules/experience"
 	"portfolio-api/modules/message"
 	"portfolio-api/modules/professional_project"
+	"portfolio-api/modules/testimonial"
 	"portfolio-api/modules/project"
 	"portfolio-api/modules/service"
 	"portfolio-api/modules/setting"
@@ -68,6 +69,7 @@ func SetupRouter(
 	service.Router(public, protected, db)
 	message.Router(public, protected, db)
 	setting.Router(public, protected, db)
+	testimonial.Router(public, protected, db, gdriveClient)
 
 	return router
 }

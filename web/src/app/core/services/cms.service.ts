@@ -10,6 +10,8 @@ import {
   DeveloperRequest,
   Education,
   EducationRequest,
+  Testimonial,
+  TestimonialRequest,
   Experience,
   ExperienceRequest,
   MessageStatusRequest,
@@ -220,4 +222,20 @@ export class CmsService {
     return this.api.put<SettingsMap>('/cms/settings', { settings });
   }
 
+  // ---------- Testimonials ----------
+  getTestimonials(): Observable<Testimonial[]> {
+    return this.api.get<Testimonial[]>('/cms/testimonials');
+  }
+  createTestimonial(body: TestimonialRequest): Observable<Testimonial> {
+    return this.api.post<Testimonial>('/cms/testimonials', body);
+  }
+  updateTestimonial(id: number, body: TestimonialRequest): Observable<Testimonial> {
+    return this.api.put<Testimonial>(`/cms/testimonials/${id}`, body);
+  }
+  uploadTestimonialPhoto(id: number, file: File): Observable<Testimonial> {
+    return this.api.upload<Testimonial>(`/cms/testimonials/${id}/photo`, file);
+  }
+  deleteTestimonial(id: number): Observable<unknown> {
+    return this.api.delete<unknown>(`/cms/testimonials/${id}`);
+  }
 }

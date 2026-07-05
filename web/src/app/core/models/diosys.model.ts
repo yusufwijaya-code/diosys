@@ -202,6 +202,30 @@ export interface ClientMessage {
 
 export type SettingsMap = Record<string, string>;
 
+/* ---------- Testimonial ---------- */
+
+export interface Testimonial {
+  testimonialID: number;
+  clientName: string;
+  clientRole: string;
+  clientCompany: string;
+  testimonialText: string;
+  rating: number;
+  photoUrl: string;
+  flagActive: number;
+  orderNo: number;
+}
+
+export interface TestimonialRequest {
+  clientName: string;
+  clientRole: string;
+  clientCompany: string;
+  testimonialText: string;
+  rating: number;
+  orderNo: number;
+  flagActive: boolean;
+}
+
 /* ---------- Request payloads ---------- */
 
 export interface DeveloperRequest {

@@ -112,6 +112,47 @@
   </div>
 </section>
 
+<!-- Testimonials -->
+@if (testimonials().length > 0) {
+  <section id="testimonials" class="section section-secondary">
+    <div class="container">
+      <span class="eyebrow">What clients say</span>
+      <h2 class="section-title">Trusted by teams worldwide</h2>
+      <p class="section-subtitle">Real feedback from clients we've had the pleasure of working with.</p>
+
+      <div class="testi-grid">
+        @for (t of testimonials(); track t.testimonialID) {
+          <div class="testi-card">
+            <div class="testi-stars">
+              @for (star of [1,2,3,4,5]; track star) {
+                <span [class.filled]="star <= t.rating">★</span>
+              }
+            </div>
+            <p class="testi-text">"{{ t.testimonialText }}"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">
+                @if (t.photoUrl) {
+                  <img [src]="t.photoUrl" [alt]="t.clientName" loading="lazy" />
+                } @else {
+                  <span class="testi-initials">{{ t.clientName.charAt(0) }}</span>
+                }
+              </div>
+              <div class="testi-meta">
+                <span class="testi-name">{{ t.clientName }}</span>
+                @if (t.clientRole || t.clientCompany) {
+                  <span class="testi-role">
+                    {{ t.clientRole }}{{ t.clientRole && t.clientCompany ? ' · ' : '' }}{{ t.clientCompany }}
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}
+
 <!-- Pricing CTA -->
 <section id="pricing" class="section section-secondary">
   <div class="container pricing-cta-wrap">
