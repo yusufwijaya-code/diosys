@@ -7,6 +7,7 @@ import { filter } from 'rxjs/operators';
 
 import { IconComponent } from '../../../components/icon/icon.component';
 import { PhoneFieldComponent } from '../../../components/phone-field/phone-field.component';
+import { RevealDirective } from '../../../core/directives/reveal.directive';
 import { PublicService } from '../../../core/services/public.service';
 import {
   DeveloperCard,
@@ -20,7 +21,7 @@ import {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, RouterLink, IconComponent, PhoneFieldComponent],
+  imports: [FormsModule, RouterLink, IconComponent, PhoneFieldComponent, RevealDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

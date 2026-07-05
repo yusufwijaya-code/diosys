@@ -1,3 +1,9 @@
+/* Hero stagger */
+.hero .eyebrow { animation: hero-in 0.50s ease both 0.05s; }
+.hero-title    { animation: hero-in 0.65s ease both 0.15s; }
+.hero-sub      { animation: hero-in 0.50s ease both 0.30s; }
+.hero-cta      { animation: hero-in 0.50s ease both 0.42s; }
+
 /* Hero */
 .hero {
   position: relative;

@@ -1,3 +1,10 @@
+/* ── Hero stagger ── */
+.ppd-back          { animation: hero-in 0.45s ease both 0.00s; }
+.ppd-hero-text .eyebrow { animation: hero-in 0.45s ease both 0.10s; }
+.ppd-title         { animation: hero-in 0.60s ease both 0.16s; }
+.ppd-summary       { animation: hero-in 0.50s ease both 0.26s; }
+.ppd-hero-thumb    { animation: hero-in 0.65s ease both 0.12s; }
+
 .ppd-status {
   padding: 8rem 0 6rem;
   text-align: center;

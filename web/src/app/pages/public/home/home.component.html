@@ -20,15 +20,15 @@
 <!-- Services -->
 <section id="services" class="section">
   <div class="container">
-    <span class="eyebrow">What we do</span>
-    <h2 class="section-title">Capabilities built for scale</h2>
-    <p class="section-subtitle">
+    <span class="eyebrow" [appReveal]="0">What we do</span>
+    <h2 class="section-title" [appReveal]="80">Capabilities built for scale</h2>
+    <p class="section-subtitle" [appReveal]="160">
       From a first MVP to a full technology ecosystem, we deliver end-to-end.
     </p>
 
     <div class="services-grid">
       @for (service of services(); track service.serviceID) {
-        <div class="card service-card">
+        <div class="card service-card" [appReveal]="$index * 80">
           <div class="service-icon"><app-icon [name]="service.icon" [size]="24" /></div>
           <h3>{{ service.title }}</h3>
           <p>{{ service.description }}</p>
@@ -44,13 +44,13 @@
 <!-- Work / Company portfolio -->
 <section id="work" class="section section-secondary">
   <div class="container">
-    <span class="eyebrow">Selected work</span>
-    <h2 class="section-title">Projects from our developers</h2>
-    <p class="section-subtitle">A snapshot of products crafted by the Diosys team.</p>
+    <span class="eyebrow" [appReveal]="0">Selected work</span>
+    <h2 class="section-title" [appReveal]="80">Projects from our developers</h2>
+    <p class="section-subtitle" [appReveal]="160">A snapshot of products crafted by the Diosys team.</p>
 
     <div class="work-grid">
       @for (project of projects(); track project.projectID) {
-        <a class="card work-card" [routerLink]="['/', project.ownerUsername, 'projects', project.projectID]">
+        <a class="card work-card" [appReveal]="$index * 80" [routerLink]="['/', project.ownerUsername, 'projects', project.projectID]">
           <div class="work-thumb">
             @if (project.thumbnailUrl) {
               <img [src]="project.thumbnailUrl" [alt]="project.title" loading="lazy" />
@@ -74,7 +74,7 @@
       }
     </div>
 
-    <div class="work-footer">
+    <div class="work-footer" [appReveal]="0">
       <a class="btn btn-ghost" [routerLink]="['/']" fragment="developers">
         Meet our developers <app-icon name="arrow" [size]="16" />
       </a>
@@ -85,13 +85,13 @@
 <!-- Developer directory -->
 <section id="developers" class="section">
   <div class="container">
-    <span class="eyebrow">The team</span>
-    <h2 class="section-title">Meet our developers</h2>
-    <p class="section-subtitle">Specialists behind every Diosys build. Explore their profiles.</p>
+    <span class="eyebrow" [appReveal]="0">The team</span>
+    <h2 class="section-title" [appReveal]="80">Meet our developers</h2>
+    <p class="section-subtitle" [appReveal]="160">Specialists behind every Diosys build. Explore their profiles.</p>
 
     <div class="dev-grid">
       @for (dev of developers(); track dev.userID) {
-        <a class="card dev-card" [routerLink]="['/', dev.username]">
+        <a class="card dev-card" [appReveal]="$index * 100" [routerLink]="['/', dev.username]">
           <div class="dev-photo">
             @if (dev.photoUrl) {
               <img [src]="dev.photoUrl" [alt]="dev.fullName" loading="lazy" />
@@ -116,13 +116,13 @@
 @if (testimonials().length > 0) {
   <section id="testimonials" class="section section-secondary">
     <div class="container">
-      <span class="eyebrow">What clients say</span>
-      <h2 class="section-title">Trusted by teams worldwide</h2>
-      <p class="section-subtitle">Real feedback from clients we've had the pleasure of working with.</p>
+      <span class="eyebrow" [appReveal]="0">What clients say</span>
+      <h2 class="section-title" [appReveal]="80">Trusted by teams worldwide</h2>
+      <p class="section-subtitle" [appReveal]="160">Real feedback from clients we've had the pleasure of working with.</p>
 
       <div class="testi-grid">
         @for (t of testimonials(); track t.testimonialID) {
-          <div class="testi-card">
+          <div class="testi-card" [appReveal]="$index * 100">
             <div class="testi-stars">
               @for (star of [1,2,3,4,5]; track star) {
                 <span [class.filled]="star <= t.rating">★</span>
@@ -156,15 +156,15 @@
 <!-- Pricing CTA -->
 <section id="pricing" class="section">
   <div class="container pricing-cta-wrap">
-    <span class="eyebrow">Pricing</span>
-    <h2 class="section-title">Tailored to your project</h2>
-    <p class="section-subtitle pricing-cta-sub">
+    <span class="eyebrow" [appReveal]="0">Pricing</span>
+    <h2 class="section-title" [appReveal]="80">Tailored to your project</h2>
+    <p class="section-subtitle pricing-cta-sub" [appReveal]="160">
       Every project is unique — scope, scale, and complexity vary. Get in touch with our developers directly to discuss your requirements and receive a custom quote.
     </p>
 
     <div class="pricing-cta-cards">
       @for (dev of developers(); track dev.userID) {
-        <a class="pricing-dev-card" [routerLink]="['/', dev.username]" fragment="contact">
+        <a class="pricing-dev-card" [appReveal]="$index * 100" [routerLink]="['/', dev.username]" fragment="contact">
           <div class="pdc-photo">
             @if (dev.photoUrl) {
               <img [src]="dev.photoUrl" [alt]="dev.fullName" loading="lazy" />
@@ -193,13 +193,13 @@
 <section id="contact" class="section section-secondary">
   <div class="container contact-grid">
     <div class="contact-intro">
-      <span class="eyebrow">Get in touch</span>
-      <h2 class="section-title">Let's build something exceptional</h2>
-      <p class="section-subtitle">
+      <span class="eyebrow" [appReveal]="0">Get in touch</span>
+      <h2 class="section-title" [appReveal]="80">Let's build something exceptional</h2>
+      <p class="section-subtitle" [appReveal]="160">
         Tell us about your project and we'll get back to you shortly.
       </p>
 
-      <ul class="contact-list">
+      <ul class="contact-list" [appReveal]="240">
         @if (settings()['contactEmail']) {
           <li><app-icon name="mail" [size]="18" /> <a [href]="'mailto:' + settings()['contactEmail']">{{ settings()['contactEmail'] }}</a></li>
         }
@@ -209,7 +209,7 @@
       </ul>
     </div>
 
-    <form class="card contact-form" (ngSubmit)="submit()">
+    <form class="card contact-form" [appReveal]="120" (ngSubmit)="submit()">
       @if (sent()) {
         <div class="alert alert-success">Thanks! Your message has been sent.</div>
       }

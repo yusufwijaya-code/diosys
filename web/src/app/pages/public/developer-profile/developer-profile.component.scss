@@ -1,3 +1,12 @@
+/* ── Hero stagger ── */
+.dp-back       { animation: hero-in 0.45s ease both 0.00s; }
+.dp-hello      { animation: hero-in 0.50s ease both 0.08s; }
+.dp-name       { animation: hero-in 0.60s ease both 0.16s; }
+.dp-job-title  { animation: hero-in 0.50s ease both 0.26s; }
+.dp-tagline    { animation: hero-in 0.50s ease both 0.36s; }
+.dp-hero-cta   { animation: hero-in 0.50s ease both 0.46s; }
+.dp-photo-wrap { animation: hero-in 0.65s ease both 0.20s; }
+
 /* ── Status ── */
 .dp-status {
   padding: 8rem 0 6rem;

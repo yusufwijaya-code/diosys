@@ -419,3 +419,24 @@ textarea.form-control { min-height: 120px; resize: vertical; }
 @media (max-width: 768px) {
   .section { padding: 4rem 0; }
 }
+
+/* ── Scroll-reveal ─────────────────────────────────────────── */
+.rv {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 0.58s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-delay: var(--rv-delay, 0ms);
+}
+.rv-on {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Hero stagger animation ─────────────────────────────────── */
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: none; }
+}
+

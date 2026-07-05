@@ -1,3 +1,13 @@
+/* ── Hero stagger ── */
+.pd-back          { animation: hero-in 0.45s ease both 0.00s; }
+.pd-hero-text .eyebrow { animation: hero-in 0.45s ease both 0.10s; }
+.pd-title         { animation: hero-in 0.60s ease both 0.16s; }
+.pd-summary       { animation: hero-in 0.50s ease both 0.26s; }
+.pd-hero-actions  { animation: hero-in 0.50s ease both 0.36s; }
+.pd-hero-thumb    { animation: hero-in 0.65s ease both 0.22s; }
+.pd-tech-row      { animation: hero-in 0.50s ease both 0.46s; }
+.pd-developer     { animation: hero-in 0.45s ease both 0.54s; }
+
 .pd-status {
   padding: 8rem 0 6rem;
   text-align: center;
