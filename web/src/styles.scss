@@ -420,6 +420,30 @@ textarea.form-control { min-height: 120px; resize: vertical; }
   .section { padding: 4rem 0; }
 }
 
+@media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  .section { padding: 3rem 0; }
+  section[id] { scroll-margin-top: 76px; }
+}
+
+/* iOS: prevent auto-zoom when input font-size < 16px triggers browser zoom */
+@media (max-width: 820px) {
+  .form-control { font-size: 16px; }
+  textarea.form-control { font-size: 16px; }
+}
+
+/* Minimum touch target size */
+.btn { min-height: 44px; }
+.btn-sm { min-height: 36px; }
+
+/* Touch device press feedback — replace :hover with :active */
+@media (hover: none) and (pointer: coarse) {
+  .btn:active { transform: scale(0.97); opacity: 0.88; transition: transform 0.08s, opacity 0.08s; }
+  .card:active { border-color: var(--border-strong); transform: scale(0.995); }
+  .chip:active { opacity: 0.75; }
+  a:active { opacity: 0.75; }
+}
+
 /* ── Scroll-reveal ─────────────────────────────────────────── */
 .rv {
   opacity: 0;

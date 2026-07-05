@@ -94,7 +94,9 @@ import { filter } from 'rxjs/operators';
 
       /* Header expands to full screen when open */
       .nav.menu-open {
-        background: #050508;
+        background: rgba(5, 5, 8, 0.97);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         bottom: 0;
         overflow-y: auto;
         border-bottom: none;
@@ -126,34 +128,46 @@ import { filter } from 'rxjs/operators';
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        padding: 0.5rem 0 2rem;
+        padding: 0 0 3rem;
       }
       .nav.menu-open .nav-links {
         display: flex;
         order: 3;
         flex: 0 0 100%;
         border-top: 1px solid var(--border);
+        animation: mobileMenuIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+      }
+
+      @keyframes mobileMenuIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: none; }
       }
 
       .nav-links a {
-        display: block;
-        padding: 1rem 0;
+        display: flex;
+        align-items: center;
+        padding: 1.1rem 0;
         font-size: 1.05rem;
+        font-weight: 500;
         color: var(--text-tertiary);
-        border-bottom: 1px solid var(--border);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        transition: color 0.15s;
       }
+      .nav-links a::after { display: none !important; } /* no desktop underline on mobile */
       .nav-links a:last-of-type { border-bottom: none; }
-      .nav-links a:hover { color: var(--text-primary); }
-      .nav-links a.cta {
-        display: flex; justify-content: center;
-        margin-top: 1.25rem;
-        padding: 0.75rem;
-        border-bottom: none;
-        color: #0b0d12;
-      }
+      .nav-links a:hover,
+      .nav-links a:active { color: var(--text-primary); }
       .nav-links a.active {
         color: var(--accent);
-        border-bottom-color: transparent;
+      }
+      .nav-links a.cta {
+        display: flex; justify-content: center;
+        margin-top: 1.5rem;
+        padding: 0.85rem;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        color: #0b0d12;
+        min-height: 52px;
       }
     }
   `],
@@ -187,6 +201,11 @@ export class NavbarComponent implements OnDestroy {
         this.activeSection.set('');
       }
     });
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.menuOpen()) this.close();
   }
 
   @HostListener('window:scroll')
@@ -241,13 +260,17 @@ export class NavbarComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.routerSub.unsubscribe();
     if (this.scrollTimer) clearTimeout(this.scrollTimer);
+    document.body.style.overflow = '';
   }
 
   toggle(): void {
-    this.menuOpen.update((v) => !v);
+    const next = !this.menuOpen();
+    this.menuOpen.set(next);
+    document.body.style.overflow = next ? 'hidden' : '';
   }
 
   close(): void {
     this.menuOpen.set(false);
+    document.body.style.overflow = '';
   }
 }

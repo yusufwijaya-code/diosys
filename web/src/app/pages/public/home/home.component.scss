@@ -262,3 +262,38 @@
   .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
   .hero { padding: 8.5rem 0 4rem; }
 }
+
+@media (max-width: 640px) {
+  /* Hero: stack CTA buttons full-width */
+  .hero { padding: 7.5rem 0 3.5rem; }
+  .hero-cta {
+    flex-direction: column;
+    a, button { width: 100%; justify-content: center; }
+  }
+
+  /* Work: single column */
+  .work-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+  /* Dev: 2-column grid on small screens */
+  .dev-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .dev-intro { display: none; } /* hide long text at this width */
+  .dev-link { font-size: 0.78rem; }
+
+  /* Testimonials: single column */
+  .testi-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+  /* Pricing CTA: full-width stacked cards */
+  .pricing-cta-cards { flex-direction: column; align-items: stretch; }
+  .pricing-dev-card { min-width: unset; width: 100%; }
+
+  /* Contact: tighten */
+  .contact-form { padding: 1.25rem; }
+}
+
+@media (max-width: 360px) {
+  /* Very small: single column for dev cards too */
+  .dev-grid { grid-template-columns: 1fr; }
+}

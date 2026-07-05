@@ -267,3 +267,23 @@
   text-align: center;
   p { margin-bottom: 1.25rem; }
 }
+
+/* ── Mobile ── */
+@media (max-width: 640px) {
+  .pd-hero { padding: 5rem 0 3rem; }
+  .pd-title { font-size: clamp(1.7rem, 7vw, 2.5rem); }
+
+  .pd-hero-actions {
+    flex-direction: column;
+    .btn { width: 100%; justify-content: center; }
+  }
+
+  .pd-feature-card {
+    grid-template-columns: 2.25rem 1fr;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .pd-gallery { grid-template-columns: 1fr; }
+  .pd-cta-section { padding: 3rem 0 4rem; }
+}
