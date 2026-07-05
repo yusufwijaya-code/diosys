@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { IconComponent } from '../../../components/icon/icon.component';
 import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 import { PublicService } from '../../../core/services/public.service';
+import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
 import { Project } from '../../../core/models/diosys.model';
 
 @Component({
@@ -21,15 +22,31 @@ export class ProjectDetailComponent implements OnInit {
   loading = signal(true);
   notFound = signal(false);
 
+  backRoute: string[] = [];
+  backFragment = 'projects';
+
   constructor(
     private route: ActivatedRoute,
     private publicService: PublicService,
     private titleService: Title,
+    private navHistory: NavigationHistoryService,
   ) {}
 
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username') ?? '';
     const projectID = Number(this.route.snapshot.paramMap.get('projectID'));
+
+    const prev = this.navHistory.previousUrl;
+    // If came from home page (prev is '/', '/#something', or empty with no history)
+    if (!prev || prev === '/' || prev.startsWith('/#')) {
+      this.backRoute = ['/'];
+      this.backFragment = 'work';
+    } else {
+      // Came from developer profile
+      this.backRoute = ['/', this.username];
+      this.backFragment = 'projects';
+    }
+
     this.load(projectID);
   }
 
