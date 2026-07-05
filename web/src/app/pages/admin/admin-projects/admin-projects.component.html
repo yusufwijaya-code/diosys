@@ -46,8 +46,10 @@
       <div class="form-group"><label>Order</label><input class="form-control" type="number" [(ngModel)]="form.orderNo" /></div>
     </div>
     <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
-      <button class="btn btn-primary" (click)="save()" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save' }}</button>
-      <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()" [disabled]="saving()">
+        @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Save }
+      </button>
+      <button class="btn btn-secondary" (click)="cancel()" [disabled]="saving()">Cancel</button>
     </div>
     <p class="muted" style="margin-top:0.75rem">Save first, then add thumbnail and gallery images from the list below.</p>
   </div>
@@ -71,7 +73,9 @@
             @for (image of project.images; track image.projectImageID) {
               <div class="gthumb">
                 <img [src]="image.url" alt="" />
-                <button (click)="deleteImage(project, image.projectImageID)">×</button>
+                <button (click)="deleteImage(project, image.projectImageID)" [disabled]="deletingImageId() === image.projectImageID">
+                  @if (deletingImageId() === image.projectImageID) { … } @else { × }
+                </button>
               </div>
             }
           </div>
@@ -87,11 +91,14 @@
                   @for (img of feat.images; track img.projectFeatureImageID) {
                     <div class="gthumb">
                       <img [src]="img.url" alt="" />
-                      <button (click)="deleteFeatureImage(project, feat.projectFeatureID, img.projectFeatureImageID)">×</button>
+                      <button (click)="deleteFeatureImage(project, feat.projectFeatureID, img.projectFeatureImageID)"
+                              [disabled]="deletingFeatImgId() === img.projectFeatureImageID">
+                        @if (deletingFeatImgId() === img.projectFeatureImageID) { … } @else { × }
+                      </button>
                     </div>
                   }
-                  <label class="gthumb-add" title="Add image to this feature">
-                    +
+                  <label class="gthumb-add" [class.btn-busy]="uploadingFeatImgId() === feat.projectFeatureID" title="Add image to this feature">
+                    @if (uploadingFeatImgId() === feat.projectFeatureID) { <span class="btn-spinner"></span> } @else { + }
                     <input type="file" accept="image/*" hidden (change)="addFeatureImage(project, feat.projectFeatureID, $event)" />
                   </label>
                 </div>
@@ -101,10 +108,18 @@
         }
       </div>
       <div class="actions">
-        <button class="btn btn-secondary btn-sm" (click)="startEdit(project)">Edit</button>
-        <label class="btn btn-secondary btn-sm" style="cursor:pointer">Thumb<input type="file" accept="image/*" hidden (change)="uploadThumb(project, $event)" /></label>
-        <label class="btn btn-secondary btn-sm" style="cursor:pointer">+ Image<input type="file" accept="image/*" hidden (change)="addImage(project, $event)" /></label>
-        <button class="btn btn-danger btn-sm" (click)="remove(project)">Delete</button>
+        <button class="btn btn-secondary btn-sm" (click)="startEdit(project)" [disabled]="deletingProjectId() === project.projectID">Edit</button>
+        <label class="btn btn-secondary btn-sm" [class.btn-busy]="uploadingThumbId() === project.projectID" style="cursor:pointer">
+          @if (uploadingThumbId() === project.projectID) { <span class="btn-spinner"></span> } @else { Thumb }
+          <input type="file" accept="image/*" hidden (change)="uploadThumb(project, $event)" />
+        </label>
+        <label class="btn btn-secondary btn-sm" [class.btn-busy]="uploadingImageId() === project.projectID" style="cursor:pointer">
+          @if (uploadingImageId() === project.projectID) { <span class="btn-spinner"></span> } @else { + Image }
+          <input type="file" accept="image/*" hidden (change)="addImage(project, $event)" />
+        </label>
+        <button class="btn btn-danger btn-sm" (click)="remove(project)" [disabled]="deletingProjectId() === project.projectID">
+          @if (deletingProjectId() === project.projectID) { <span class="btn-spinner"></span> } @else { Delete }
+        </button>
       </div>
     </div>
   }

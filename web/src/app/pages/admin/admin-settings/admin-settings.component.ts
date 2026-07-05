@@ -37,7 +37,9 @@ const KNOWN: { key: string; label: string }[] = [
           }
         </div>
       }
-      <button class="btn btn-primary" (click)="save()" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save settings' }}</button>
+      <button class="btn btn-primary" (click)="save()" [disabled]="saving()">
+        @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Save settings }
+      </button>
     </div>
   `,
 })

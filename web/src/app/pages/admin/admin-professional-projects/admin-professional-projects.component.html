@@ -27,7 +27,9 @@
           <span class="muted" style="margin-left:0.5rem">@ {{ proj.company }}</span>
           @if (proj.summary) { <p class="muted" style="margin-top:0.25rem;font-size:0.85rem">{{ proj.summary }}</p> }
         </div>
-        <button class="btn btn-danger btn-sm" (click)="deleteProject(proj.professionalProjectID)">Delete</button>
+        <button class="btn btn-danger btn-sm" (click)="deleteProject(proj.professionalProjectID)" [disabled]="deletingProjectId() === proj.professionalProjectID">
+          @if (deletingProjectId() === proj.professionalProjectID) { <span class="btn-spinner"></span> Deleting… } @else { Delete }
+        </button>
       </div>
 
       <!-- Thumbnail -->
@@ -36,8 +38,13 @@
           <img [src]="proj.thumbnailUrl" style="height:80px;border-radius:6px;object-fit:cover;margin-bottom:0.5rem;display:block" alt="" />
         }
         <label style="font-size:0.82rem;color:var(--text-secondary)">Upload thumbnail</label>
-        <input type="file" accept="image/*" style="display:block;margin-top:0.25rem"
-          (change)="onThumbnail(proj.professionalProjectID, $event)" />
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.25rem">
+          <input type="file" accept="image/*" style="display:block" [disabled]="uploadingThumbnailId() === proj.professionalProjectID"
+            (change)="onThumbnail(proj.professionalProjectID, $event)" />
+          @if (uploadingThumbnailId() === proj.professionalProjectID) {
+            <span style="font-size:0.8rem;color:var(--accent);display:flex;align-items:center;gap:0.4rem"><span class="btn-spinner"></span> Uploading…</span>
+          }
+        </div>
       </div>
 
       <!-- Features -->
@@ -52,7 +59,9 @@
                   <p class="muted" style="font-size:0.82rem;margin-top:0.2rem">{{ feat.description }}</p>
                 }
               </div>
-              <button class="btn btn-danger btn-sm" (click)="deleteFeature(proj, feat.featureID)">×</button>
+              <button class="btn btn-danger btn-sm" (click)="deleteFeature(proj, feat.featureID)" [disabled]="deletingFeatureId() === feat.featureID">
+                @if (deletingFeatureId() === feat.featureID) { <span class="btn-spinner"></span> } @else { × }
+              </button>
             </div>
 
             <!-- Feature images -->
@@ -63,7 +72,10 @@
                     <img [src]="img.url" style="height:60px;width:90px;object-fit:cover;border-radius:4px;display:block" alt="" />
                     <button class="btn btn-danger btn-sm"
                       style="position:absolute;top:-6px;right:-6px;padding:0 5px;font-size:0.7rem;line-height:1.4"
-                      (click)="deleteImage(proj, feat.featureID, img.featureImageID)">×</button>
+                      (click)="deleteImage(proj, feat.featureID, img.featureImageID)"
+                      [disabled]="deletingImageId() === img.featureImageID">
+                      @if (deletingImageId() === img.featureImageID) { <span class="btn-spinner" style="width:9px;height:9px;border-width:1.5px"></span> } @else { × }
+                    </button>
                   </div>
                 }
               </div>
@@ -76,7 +88,9 @@
               <input class="form-control" placeholder="Caption (optional)"
                 style="flex:1;min-width:140px;font-size:0.82rem"
                 [(ngModel)]="getImageForm(feat.featureID).caption" />
-              <button class="btn btn-secondary btn-sm" (click)="uploadImage(proj, feat.featureID)">Upload image</button>
+              <button class="btn btn-secondary btn-sm" (click)="uploadImage(proj, feat.featureID)" [disabled]="uploadingImageFeatureId() === feat.featureID">
+                @if (uploadingImageFeatureId() === feat.featureID) { <span class="btn-spinner"></span> Uploading… } @else { Upload image }
+              </button>
             </div>
           </div>
         }
@@ -90,7 +104,9 @@
           <textarea class="form-control" placeholder="Description" style="grid-column:span 2"
             [(ngModel)]="getFeatureForm(proj.professionalProjectID).description"></textarea>
         </div>
-        <button class="btn btn-secondary btn-sm" style="margin-top:0.4rem" (click)="addFeature(proj)">+ Add feature</button>
+        <button class="btn btn-secondary btn-sm" style="margin-top:0.4rem" (click)="addFeature(proj)" [disabled]="addingFeatureProjectId() === proj.professionalProjectID">
+          @if (addingFeatureProjectId() === proj.professionalProjectID) { <span class="btn-spinner"></span> Adding… } @else { + Add feature }
+        </button>
       </div>
     </div>
   }
@@ -104,6 +120,8 @@
     </div>
     <div class="form-group"><label>Summary</label><textarea class="form-control" [(ngModel)]="ppForm.summary"></textarea></div>
     <div class="form-group"><label>Order no</label><input class="form-control" type="number" [(ngModel)]="ppForm.orderNo" /></div>
-    <button class="btn btn-primary btn-sm" (click)="addProject()">+ Add project</button>
+    <button class="btn btn-primary btn-sm" (click)="addProject()" [disabled]="addingProject()">
+      @if (addingProject()) { <span class="btn-spinner"></span> Adding… } @else { + Add project }
+    </button>
   </div>
 }

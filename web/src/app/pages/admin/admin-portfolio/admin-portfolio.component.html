@@ -30,7 +30,11 @@
   }
   <button class="btn btn-secondary btn-sm" (click)="addFact()">+ Fact</button>
 
-  <div style="margin-top:1rem"><button class="btn btn-primary" (click)="saveSummary()">Save summary</button></div>
+  <div style="margin-top:1rem">
+    <button class="btn btn-primary" (click)="saveSummary()" [disabled]="savingSummary()">
+      @if (savingSummary()) { <span class="btn-spinner"></span> Saving… } @else { Save summary }
+    </button>
+  </div>
 </div>
 
 <!-- Experiences -->
@@ -44,7 +48,11 @@
             <strong>{{ exp.position }}</strong> · {{ exp.company }}<br />
             <span class="muted">{{ exp.period }}</span>
           </td>
-          <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteExperience(exp.experienceID)">Delete</button></td>
+          <td class="actions">
+            <button class="btn btn-danger btn-sm" (click)="deleteExperience(exp.experienceID)" [disabled]="deletingExpId() === exp.experienceID">
+              @if (deletingExpId() === exp.experienceID) { <span class="btn-spinner"></span> } @else { Delete }
+            </button>
+          </td>
         </tr>
       }
     </tbody>
@@ -56,7 +64,9 @@
   </div>
   <div class="form-group"><label>Technologies (comma separated)</label><input class="form-control" [(ngModel)]="expForm.technologies" /></div>
   <div class="form-group"><label>Responsibilities (one per line)</label><textarea class="form-control" [(ngModel)]="expForm.responsibilities"></textarea></div>
-  <button class="btn btn-primary btn-sm" (click)="addExperience()">+ Add experience</button>
+  <button class="btn btn-primary btn-sm" (click)="addExperience()" [disabled]="addingExp()">
+    @if (addingExp()) { <span class="btn-spinner"></span> Adding… } @else { + Add experience }
+  </button>
 </div>
 
 <!-- Educations -->
@@ -67,7 +77,11 @@
       @for (edu of educations(); track edu.educationID) {
         <tr>
           <td><strong>{{ edu.degree }}</strong> · {{ edu.institution }}<br /><span class="muted">{{ edu.year }}</span></td>
-          <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteEducation(edu.educationID)">Delete</button></td>
+          <td class="actions">
+            <button class="btn btn-danger btn-sm" (click)="deleteEducation(edu.educationID)" [disabled]="deletingEduId() === edu.educationID">
+              @if (deletingEduId() === edu.educationID) { <span class="btn-spinner"></span> } @else { Delete }
+            </button>
+          </td>
         </tr>
       }
     </tbody>
@@ -79,7 +93,9 @@
     <div class="form-group"><label>Type</label><input class="form-control" [(ngModel)]="eduForm.type" /></div>
   </div>
   <div class="form-group"><label>Achievements (one per line)</label><textarea class="form-control" [(ngModel)]="eduForm.achievements"></textarea></div>
-  <button class="btn btn-primary btn-sm" (click)="addEducation()">+ Add education</button>
+  <button class="btn btn-primary btn-sm" (click)="addEducation()" [disabled]="addingEdu()">
+    @if (addingEdu()) { <span class="btn-spinner"></span> Adding… } @else { + Add education }
+  </button>
 </div>
 
 <!-- Certificates -->
@@ -90,7 +106,11 @@
       @for (cert of certificates(); track cert.certificateID) {
         <tr>
           <td><strong>{{ cert.name }}</strong> · {{ cert.issuer }}<br /><span class="muted">{{ cert.period }}</span></td>
-          <td class="actions"><button class="btn btn-danger btn-sm" (click)="deleteCertificate(cert.certificateID)">Delete</button></td>
+          <td class="actions">
+            <button class="btn btn-danger btn-sm" (click)="deleteCertificate(cert.certificateID)" [disabled]="deletingCertId() === cert.certificateID">
+              @if (deletingCertId() === cert.certificateID) { <span class="btn-spinner"></span> } @else { Delete }
+            </button>
+          </td>
         </tr>
       }
     </tbody>
@@ -101,7 +121,9 @@
     <div class="form-group"><label>Period</label><input class="form-control" [(ngModel)]="certForm.period" /></div>
     <div class="form-group"><label>Link</label><input class="form-control" [(ngModel)]="certForm.link" /></div>
   </div>
-  <button class="btn btn-primary btn-sm" (click)="addCertificate()">+ Add certificate</button>
+  <button class="btn btn-primary btn-sm" (click)="addCertificate()" [disabled]="addingCert()">
+    @if (addingCert()) { <span class="btn-spinner"></span> Adding… } @else { + Add certificate }
+  </button>
 </div>
 
 <!-- Skills -->
@@ -109,7 +131,14 @@
   <h3 style="margin-bottom:1rem">Skills</h3>
   <div style="margin-bottom:1rem">
     @for (skill of skills(); track skill.skillID) {
-      <span class="chip">{{ skill.name }} <a (click)="deleteSkill(skill.skillID)" style="cursor:pointer;color:#fca5a5">×</a></span>
+      <span class="chip">
+        {{ skill.name }}
+        @if (deletingSkillId() === skill.skillID) {
+          <span class="btn-spinner" style="margin-left:4px"></span>
+        } @else {
+          <a (click)="deleteSkill(skill.skillID)" style="cursor:pointer;color:#fca5a5;margin-left:2px">×</a>
+        }
+      </span>
     }
   </div>
   <div class="form-row">
@@ -117,6 +146,8 @@
     <div class="form-group"><label>Level</label><input class="form-control" [(ngModel)]="skillForm.level" /></div>
     <div class="form-group"><label>Category</label><input class="form-control" [(ngModel)]="skillForm.category" /></div>
   </div>
-  <button class="btn btn-primary btn-sm" (click)="addSkill()">+ Add skill</button>
+  <button class="btn btn-primary btn-sm" (click)="addSkill()" [disabled]="addingSkill()">
+    @if (addingSkill()) { <span class="btn-spinner"></span> Adding… } @else { + Add skill }
+  </button>
 </div>
 

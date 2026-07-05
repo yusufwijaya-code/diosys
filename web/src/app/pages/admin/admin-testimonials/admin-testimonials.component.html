@@ -71,9 +71,11 @@
 
       <div class="form-actions">
         <button class="btn btn-primary" (click)="save()" [disabled]="saving() || uploading()">
-          {{ saving() ? 'Saving…' : uploading() ? 'Uploading photo…' : 'Save' }}
+          @if (saving()) { <span class="btn-spinner"></span> Saving… }
+          @else if (uploading()) { <span class="btn-spinner"></span> Uploading photo… }
+          @else { Save }
         </button>
-        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-secondary" (click)="cancel()" [disabled]="saving() || uploading()">Cancel</button>
       </div>
     </div>
   }
@@ -104,8 +106,10 @@
           </span>
         </div>
         <div class="cms-item-actions">
-          <button class="btn btn-secondary btn-sm" (click)="startEdit(t)">Edit</button>
-          <button class="btn btn-danger btn-sm" (click)="remove(t)">Delete</button>
+          <button class="btn btn-secondary btn-sm" (click)="startEdit(t)" [disabled]="deletingId() === t.testimonialID">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="remove(t)" [disabled]="deletingId() === t.testimonialID">
+            @if (deletingId() === t.testimonialID) { <span class="btn-spinner"></span> } @else { Delete }
+          </button>
         </div>
       </div>
     }

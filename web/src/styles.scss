@@ -444,6 +444,23 @@ textarea.form-control { min-height: 120px; resize: vertical; }
   a:active { opacity: 0.75; }
 }
 
+/* ── CMS button loading spinner ───────────────────────────── */
+.btn-spinner {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: btn-spin 0.55s linear infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Disable label-based file-input buttons while busy */
+label.btn-busy { pointer-events: none; opacity: 0.55; cursor: default; }
+
 /* ── Scroll-reveal ─────────────────────────────────────────── */
 .rv {
   opacity: 0;

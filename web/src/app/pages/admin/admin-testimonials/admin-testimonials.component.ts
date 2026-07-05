@@ -21,6 +21,7 @@ export class AdminTestimonialsComponent implements OnInit {
   editingId = signal<number | null>(null);
   saving = signal(false);
   uploading = signal(false);
+  deletingId = signal<number | null>(null);
   error = signal('');
 
   form: TestimonialRequest = emptyForm();
@@ -107,6 +108,10 @@ export class AdminTestimonialsComponent implements OnInit {
 
   remove(t: Testimonial): void {
     if (!confirm(`Delete testimonial from "${t.clientName}"?`)) return;
-    this.cms.deleteTestimonial(t.testimonialID).subscribe(() => this.load());
+    this.deletingId.set(t.testimonialID);
+    this.cms.deleteTestimonial(t.testimonialID).subscribe({
+      next: () => { this.deletingId.set(null); this.load(); },
+      error: () => this.deletingId.set(null),
+    });
   }
 }

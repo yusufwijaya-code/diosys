@@ -22,6 +22,9 @@ export class AdminDevelopersComponent implements OnInit {
   editingId = signal<number | null>(null);
   showForm = signal(false);
   saving = signal(false);
+  deletingId = signal<number | null>(null);
+  uploadingPhoto = signal(false);
+  uploadingCV = signal(false);
   error = signal('');
   form: DeveloperRequest = emptyForm();
 
@@ -82,9 +85,10 @@ export class AdminDevelopersComponent implements OnInit {
 
   remove(dev: Developer): void {
     if (!confirm(`Delete developer "${dev.fullName}"? This removes their portfolio too.`)) return;
+    this.deletingId.set(dev.userID);
     this.cms.deleteDeveloper(dev.userID).subscribe({
-      next: () => this.load(),
-      error: (err) => alert(err?.error?.message || 'Failed to delete.'),
+      next: () => { this.deletingId.set(null); this.load(); },
+      error: (err) => { this.deletingId.set(null); alert(err?.error?.message || 'Failed to delete.'); },
     });
   }
 
@@ -92,9 +96,10 @@ export class AdminDevelopersComponent implements OnInit {
     const id = this.editingId();
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!id || !file) return;
+    this.uploadingPhoto.set(true);
     this.cms.uploadDeveloperPhoto(id, file).subscribe({
-      next: () => this.load(),
-      error: () => alert('Failed to upload photo.'),
+      next: () => { this.uploadingPhoto.set(false); this.load(); },
+      error: () => { this.uploadingPhoto.set(false); alert('Failed to upload photo.'); },
     });
   }
 
@@ -102,9 +107,10 @@ export class AdminDevelopersComponent implements OnInit {
     const id = this.editingId();
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!id || !file) return;
+    this.uploadingCV.set(true);
     this.cms.uploadCV(id, file).subscribe({
-      next: () => { this.load(); alert('CV uploaded successfully.'); },
-      error: () => alert('Failed to upload CV.'),
+      next: () => { this.uploadingCV.set(false); this.load(); },
+      error: () => { this.uploadingCV.set(false); alert('Failed to upload CV.'); },
     });
   }
 }

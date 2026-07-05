@@ -37,6 +37,12 @@ export class AdminProjectsComponent implements OnInit {
   showForm = signal(false);
   editingId = signal<number | null>(null);
   saving = signal(false);
+  deletingProjectId = signal<number | null>(null);
+  uploadingThumbId = signal<number | null>(null);
+  uploadingImageId = signal<number | null>(null);
+  deletingImageId = signal<number | null>(null);
+  uploadingFeatImgId = signal<number | null>(null);
+  deletingFeatImgId = signal<number | null>(null);
   error = signal('');
   form: ProjectForm = emptyForm();
 
@@ -119,14 +125,22 @@ export class AdminProjectsComponent implements OnInit {
   remove(project: Project): void {
     const userID = this.selectedUserID();
     if (!userID || !confirm(`Delete project "${project.title}"?`)) return;
-    this.cms.deleteProject(userID, project.projectID).subscribe(() => this.loadProjects());
+    this.deletingProjectId.set(project.projectID);
+    this.cms.deleteProject(userID, project.projectID).subscribe({
+      next: () => { this.deletingProjectId.set(null); this.loadProjects(); },
+      error: () => this.deletingProjectId.set(null),
+    });
   }
 
   uploadThumb(project: Project, event: Event): void {
     const userID = this.selectedUserID();
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!userID || !file) return;
-    this.cms.uploadProjectThumbnail(userID, project.projectID, file).subscribe(() => this.loadProjects());
+    this.uploadingThumbId.set(project.projectID);
+    this.cms.uploadProjectThumbnail(userID, project.projectID, file).subscribe({
+      next: () => { this.uploadingThumbId.set(null); this.loadProjects(); },
+      error: () => this.uploadingThumbId.set(null),
+    });
   }
 
   addImage(project: Project, event: Event): void {
@@ -134,13 +148,21 @@ export class AdminProjectsComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!userID || !file) return;
     const caption = prompt('Image caption (optional):') || '';
-    this.cms.addProjectImage(userID, project.projectID, file, caption).subscribe(() => this.loadProjects());
+    this.uploadingImageId.set(project.projectID);
+    this.cms.addProjectImage(userID, project.projectID, file, caption).subscribe({
+      next: () => { this.uploadingImageId.set(null); this.loadProjects(); },
+      error: () => this.uploadingImageId.set(null),
+    });
   }
 
   deleteImage(project: Project, imageID: number): void {
     const userID = this.selectedUserID();
     if (!userID) return;
-    this.cms.deleteProjectImage(userID, project.projectID, imageID).subscribe(() => this.loadProjects());
+    this.deletingImageId.set(imageID);
+    this.cms.deleteProjectImage(userID, project.projectID, imageID).subscribe({
+      next: () => { this.deletingImageId.set(null); this.loadProjects(); },
+      error: () => this.deletingImageId.set(null),
+    });
   }
 
   addFeatureImage(project: Project, featureID: number, event: Event): void {
@@ -148,14 +170,20 @@ export class AdminProjectsComponent implements OnInit {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!userID || !file) return;
     const caption = prompt('Image caption (optional):') || '';
-    this.cms.addProjectFeatureImage(userID, project.projectID, featureID, file, caption)
-      .subscribe(() => this.loadProjects());
+    this.uploadingFeatImgId.set(featureID);
+    this.cms.addProjectFeatureImage(userID, project.projectID, featureID, file, caption).subscribe({
+      next: () => { this.uploadingFeatImgId.set(null); this.loadProjects(); },
+      error: () => this.uploadingFeatImgId.set(null),
+    });
   }
 
   deleteFeatureImage(project: Project, featureID: number, imageID: number): void {
     const userID = this.selectedUserID();
     if (!userID) return;
-    this.cms.deleteProjectFeatureImage(userID, project.projectID, featureID, imageID)
-      .subscribe(() => this.loadProjects());
+    this.deletingFeatImgId.set(imageID);
+    this.cms.deleteProjectFeatureImage(userID, project.projectID, featureID, imageID).subscribe({
+      next: () => { this.deletingFeatImgId.set(null); this.loadProjects(); },
+      error: () => this.deletingFeatImgId.set(null),
+    });
   }
 }

@@ -24,6 +24,9 @@ type UserRepository interface {
 	UpdateGoogleSub(userID int, googleSub string) error
 	UpdatePhoto(userID int, fileName, gdriveID string) error
 	UpdateCV(userID int, fileName, gdriveID string) error
+	// CollectGdriveIDsForUser returns every Google Drive file ID belonging to a
+	// developer and their entire portfolio so they can be purged on account deletion.
+	CollectGdriveIDsForUser(userID int) ([]string, error)
 }
 
 type userRepositoryImpl struct {
@@ -122,4 +125,37 @@ func (r *userRepositoryImpl) UpdateCV(userID int, fileName, gdriveID string) err
 	_, err := r.db.Exec(`UPDATE ms_user SET cvFileName = ?, cvGdriveID = ? WHERE userID = ?`,
 		null.NewString(fileName, fileName != ""), null.NewString(gdriveID, gdriveID != ""), userID)
 	return err
+}
+
+func (r *userRepositoryImpl) CollectGdriveIDsForUser(userID int) ([]string, error) {
+	query := `
+		SELECT photoGdriveID FROM ms_user
+			WHERE userID = ? AND photoGdriveID IS NOT NULL AND photoGdriveID != ''
+		UNION ALL
+		SELECT cvGdriveID FROM ms_user
+			WHERE userID = ? AND cvGdriveID IS NOT NULL AND cvGdriveID != ''
+		UNION ALL
+		SELECT thumbnailGdriveID FROM ms_project
+			WHERE userID = ? AND thumbnailGdriveID IS NOT NULL AND thumbnailGdriveID != ''
+		UNION ALL
+		SELECT pi.gdriveID FROM ms_project_image pi
+			INNER JOIN ms_project p ON p.projectID = pi.projectID
+			WHERE p.userID = ? AND pi.gdriveID IS NOT NULL AND pi.gdriveID != ''
+		UNION ALL
+		SELECT pfi.gdriveID FROM ms_project_feature_image pfi
+			INNER JOIN ms_project_feature pf ON pf.projectFeatureID = pfi.projectFeatureID
+			INNER JOIN ms_project p ON p.projectID = pf.projectID
+			WHERE p.userID = ? AND pfi.gdriveID != ''
+		UNION ALL
+		SELECT thumbnailGdriveID FROM ms_professional_project
+			WHERE userID = ? AND thumbnailGdriveID IS NOT NULL AND thumbnailGdriveID != ''
+		UNION ALL
+		SELECT ppfi.gdriveID FROM ms_professional_project_feature_image ppfi
+			INNER JOIN ms_professional_project_feature ppf ON ppf.featureID = ppfi.featureID
+			INNER JOIN ms_professional_project pp ON pp.professionalProjectID = ppf.professionalProjectID
+			WHERE pp.userID = ? AND ppfi.gdriveID != ''`
+
+	var ids []string
+	err := r.db.Select(&ids, query, userID, userID, userID, userID, userID, userID, userID)
+	return ids, err
 }

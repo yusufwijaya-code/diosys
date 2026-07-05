@@ -44,17 +44,21 @@
         <div class="form-row" style="margin-top:0.75rem">
           <div class="form-group">
             <label>Photo</label>
-            <input type="file" accept="image/*" class="form-control" (change)="uploadPhoto($event)" />
+            <input type="file" accept="image/*" class="form-control" [disabled]="uploadingPhoto()" (change)="uploadPhoto($event)" />
+            @if (uploadingPhoto()) { <span style="font-size:0.8rem;color:var(--accent);display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem"><span class="btn-spinner"></span> Uploading photo…</span> }
           </div>
           <div class="form-group">
             <label>CV (PDF)</label>
-            <input type="file" accept="application/pdf" class="form-control" (change)="uploadCV($event)" />
+            <input type="file" accept="application/pdf" class="form-control" [disabled]="uploadingCV()" (change)="uploadCV($event)" />
+            @if (uploadingCV()) { <span style="font-size:0.8rem;color:var(--accent);display:flex;align-items:center;gap:0.4rem;margin-top:0.3rem"><span class="btn-spinner"></span> Uploading CV…</span> }
           </div>
         </div>
       }
       <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
-        <button class="btn btn-primary" type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Save' }}</button>
-        <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" type="submit" [disabled]="saving()">
+          @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Save }
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="cancel()" [disabled]="saving()">Cancel</button>
       </div>
     </form>
   </div>
@@ -77,10 +81,12 @@
           <td>{{ dev.isAdmin ? 'Admin' : 'Developer' }}</td>
           <td>{{ dev.flagActive ? 'Yes' : 'No' }}</td>
           <td class="actions">
-            <button class="btn btn-secondary btn-sm" (click)="startEdit(dev)">Edit</button>
+            <button class="btn btn-secondary btn-sm" (click)="startEdit(dev)" [disabled]="deletingId() === dev.userID">Edit</button>
             <a class="btn btn-secondary btn-sm" [routerLink]="['/admin/developers', dev.userID, 'portfolio']">Portfolio</a>
             @if (!dev.isAdmin) {
-              <button class="btn btn-danger btn-sm" (click)="remove(dev)">Delete</button>
+              <button class="btn btn-danger btn-sm" (click)="remove(dev)" [disabled]="deletingId() === dev.userID">
+                @if (deletingId() === dev.userID) { <span class="btn-spinner"></span> Deleting… } @else { Delete }
+              </button>
             }
           </td>
         </tr>

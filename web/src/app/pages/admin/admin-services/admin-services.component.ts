@@ -33,8 +33,10 @@ const emptyForm = (): ServiceRequest => ({ title: '', description: '', icon: '',
           </div>
         </div>
         <div style="display:flex;gap:0.5rem">
-          <button class="btn btn-primary" (click)="save()">Save</button>
-          <button class="btn btn-secondary" (click)="showForm.set(false)">Cancel</button>
+          <button class="btn btn-primary" (click)="save()" [disabled]="saving()">
+            @if (saving()) { <span class="btn-spinner"></span> Saving… } @else { Save }
+          </button>
+          <button class="btn btn-secondary" (click)="showForm.set(false)" [disabled]="saving()">Cancel</button>
         </div>
       </div>
     }
@@ -50,8 +52,10 @@ const emptyForm = (): ServiceRequest => ({ title: '', description: '', icon: '',
               <td>{{ svc.orderNo }}</td>
               <td>{{ svc.flagActive ? 'Yes' : 'No' }}</td>
               <td class="actions">
-                <button class="btn btn-secondary btn-sm" (click)="startEdit(svc)">Edit</button>
-                <button class="btn btn-danger btn-sm" (click)="remove(svc)">Delete</button>
+                <button class="btn btn-secondary btn-sm" (click)="startEdit(svc)" [disabled]="deletingId() === svc.serviceID">Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="remove(svc)" [disabled]="deletingId() === svc.serviceID">
+                  @if (deletingId() === svc.serviceID) { <span class="btn-spinner"></span> } @else { Delete }
+                </button>
               </td>
             </tr>
           }
@@ -65,6 +69,8 @@ export class AdminServicesComponent implements OnInit {
   services = signal<Service[]>([]);
   showForm = signal(false);
   editingId = signal<number | null>(null);
+  saving = signal(false);
+  deletingId = signal<number | null>(null);
   form: ServiceRequest = emptyForm();
 
   constructor(private cms: CmsService) {}
@@ -82,13 +88,21 @@ export class AdminServicesComponent implements OnInit {
   }
 
   save(): void {
+    this.saving.set(true);
     const id = this.editingId();
     const req = id ? this.cms.updateService(id, this.form) : this.cms.createService(this.form);
-    req.subscribe(() => { this.showForm.set(false); this.load(); });
+    req.subscribe({
+      next: () => { this.saving.set(false); this.showForm.set(false); this.load(); },
+      error: () => this.saving.set(false),
+    });
   }
 
   remove(svc: Service): void {
     if (!confirm(`Delete service "${svc.title}"?`)) return;
-    this.cms.deleteService(svc.serviceID).subscribe(() => this.load());
+    this.deletingId.set(svc.serviceID);
+    this.cms.deleteService(svc.serviceID).subscribe({
+      next: () => { this.deletingId.set(null); this.load(); },
+      error: () => this.deletingId.set(null),
+    });
   }
 }

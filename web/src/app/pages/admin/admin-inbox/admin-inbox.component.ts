@@ -35,9 +35,17 @@ import { ClientMessage } from '../../../core/models/diosys.model';
                 @else { <span class="chip chip-accent">New</span> }
               </td>
               <td class="actions">
-                @if (!msg.isRead) { <button class="btn btn-secondary btn-sm" (click)="markRead(msg)">Mark read</button> }
-                <button class="btn btn-secondary btn-sm" (click)="toggleArchive(msg)">{{ msg.isArchived ? 'Unarchive' : 'Archive' }}</button>
-                <button class="btn btn-danger btn-sm" (click)="remove(msg)">Delete</button>
+                @if (!msg.isRead) {
+                  <button class="btn btn-secondary btn-sm" (click)="markRead(msg)" [disabled]="loadingId() === msg.messageID">
+                    @if (loadingId() === msg.messageID) { <span class="btn-spinner"></span> } @else { Mark read }
+                  </button>
+                }
+                <button class="btn btn-secondary btn-sm" (click)="toggleArchive(msg)" [disabled]="loadingId() === msg.messageID">
+                  @if (loadingId() === msg.messageID) { <span class="btn-spinner"></span> } @else { {{ msg.isArchived ? 'Unarchive' : 'Archive' }} }
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="remove(msg)" [disabled]="loadingId() === msg.messageID">
+                  @if (loadingId() === msg.messageID) { <span class="btn-spinner"></span> } @else { Delete }
+                </button>
               </td>
             </tr>
           }
@@ -54,6 +62,7 @@ import { ClientMessage } from '../../../core/models/diosys.model';
 })
 export class AdminInboxComponent implements OnInit {
   messages = signal<ClientMessage[]>([]);
+  loadingId = signal<number | null>(null);
 
   constructor(private cms: CmsService) {}
 
@@ -68,15 +77,27 @@ export class AdminInboxComponent implements OnInit {
   }
 
   markRead(msg: ClientMessage): void {
-    this.cms.updateMessageStatus(msg.messageID, { isRead: true }).subscribe(() => this.load());
+    this.loadingId.set(msg.messageID);
+    this.cms.updateMessageStatus(msg.messageID, { isRead: true }).subscribe({
+      next: () => { this.loadingId.set(null); this.load(); },
+      error: () => this.loadingId.set(null),
+    });
   }
 
   toggleArchive(msg: ClientMessage): void {
-    this.cms.updateMessageStatus(msg.messageID, { isArchived: msg.isArchived === 0, isRead: true }).subscribe(() => this.load());
+    this.loadingId.set(msg.messageID);
+    this.cms.updateMessageStatus(msg.messageID, { isArchived: msg.isArchived === 0, isRead: true }).subscribe({
+      next: () => { this.loadingId.set(null); this.load(); },
+      error: () => this.loadingId.set(null),
+    });
   }
 
   remove(msg: ClientMessage): void {
     if (!confirm('Delete this message?')) return;
-    this.cms.deleteMessage(msg.messageID).subscribe(() => this.load());
+    this.loadingId.set(msg.messageID);
+    this.cms.deleteMessage(msg.messageID).subscribe({
+      next: () => { this.loadingId.set(null); this.load(); },
+      error: () => this.loadingId.set(null),
+    });
   }
 }

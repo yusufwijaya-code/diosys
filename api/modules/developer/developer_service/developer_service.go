@@ -3,6 +3,7 @@ package developer_service
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"mime/multipart"
 
 	"portfolio-api/base/helpers/error_helper"
@@ -270,11 +271,23 @@ func (s *developerServiceImpl) Delete(userID int) error {
 	if user.IsAdmin == 1 {
 		return error_helper.Forbidden("the administrator account cannot be deleted")
 	}
+
+	// Collect every GDrive file ID before the DB delete cascades everything away.
+	var gdriveIDs []string
+	if s.gdrive != nil {
+		gdriveIDs, _ = s.userRepository.CollectGdriveIDsForUser(userID)
+	}
+
 	if err := s.userRepository.Delete(userID); err != nil {
 		return error_helper.Internal(err)
 	}
-	if s.gdrive != nil && user.PhotoGdriveID.Valid && user.PhotoGdriveID.String != "" {
-		_ = s.gdrive.DeleteFile(user.PhotoGdriveID.String)
+
+	// Best-effort: purge all Drive files (profile photo, CV, project thumbnails,
+	// gallery images, feature images, professional project media).
+	for _, id := range gdriveIDs {
+		if err := s.gdrive.DeleteFile(id); err != nil {
+			log.Printf("[delete developer %d] gdrive delete %s: %v", userID, id, err)
+		}
 	}
 	return nil
 }

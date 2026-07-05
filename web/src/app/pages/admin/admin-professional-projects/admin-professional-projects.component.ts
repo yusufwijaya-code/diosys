@@ -20,6 +20,14 @@ export class AdminProfessionalProjectsComponent implements OnInit {
   ppFeatureForms: Record<number, { title: string; description: string; orderNo: number }> = {};
   ppFeatureImageForms: Record<number, { file: File | null; caption: string }> = {};
 
+  addingProject = signal(false);
+  deletingProjectId = signal<number | null>(null);
+  uploadingThumbnailId = signal<number | null>(null);
+  addingFeatureProjectId = signal<number | null>(null);
+  deletingFeatureId = signal<number | null>(null);
+  uploadingImageFeatureId = signal<number | null>(null);
+  deletingImageId = signal<number | null>(null);
+
   constructor(private cms: CmsService, private publicSvc: PublicService) {}
 
   ngOnInit(): void {
@@ -66,23 +74,36 @@ export class AdminProfessionalProjectsComponent implements OnInit {
   addProject(): void {
     const userID = this.selectedUserID();
     if (!userID || !this.ppForm.title || !this.ppForm.company) return;
-    this.cms.createProfessionalProject(userID, { ...this.ppForm }).subscribe(() => {
-      this.ppForm = { title: '', company: '', summary: '', orderNo: 0 };
-      this.loadProjects();
+    this.addingProject.set(true);
+    this.cms.createProfessionalProject(userID, { ...this.ppForm }).subscribe({
+      next: () => {
+        this.addingProject.set(false);
+        this.ppForm = { title: '', company: '', summary: '', orderNo: 0 };
+        this.loadProjects();
+      },
+      error: () => this.addingProject.set(false),
     });
   }
 
   deleteProject(projectID: number): void {
     const userID = this.selectedUserID();
     if (!userID || !confirm('Delete this professional project?')) return;
-    this.cms.deleteProfessionalProject(userID, projectID).subscribe(() => this.loadProjects());
+    this.deletingProjectId.set(projectID);
+    this.cms.deleteProfessionalProject(userID, projectID).subscribe({
+      next: () => { this.deletingProjectId.set(null); this.loadProjects(); },
+      error: () => this.deletingProjectId.set(null),
+    });
   }
 
   onThumbnail(projectID: number, event: Event): void {
     const userID = this.selectedUserID();
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!userID || !file) return;
-    this.cms.uploadProfessionalProjectThumbnail(userID, projectID, file).subscribe(() => this.loadProjects());
+    this.uploadingThumbnailId.set(projectID);
+    this.cms.uploadProfessionalProjectThumbnail(userID, projectID, file).subscribe({
+      next: () => { this.uploadingThumbnailId.set(null); this.loadProjects(); },
+      error: () => this.uploadingThumbnailId.set(null),
+    });
   }
 
   getFeatureForm(projectID: number): { title: string; description: string; orderNo: number } {
@@ -96,17 +117,25 @@ export class AdminProfessionalProjectsComponent implements OnInit {
     const userID = this.selectedUserID();
     const form = this.getFeatureForm(proj.professionalProjectID);
     if (!userID || !form.title) return;
-    this.cms.addProfessionalProjectFeature(userID, proj.professionalProjectID, { ...form }).subscribe(() => {
-      this.ppFeatureForms[proj.professionalProjectID] = { title: '', description: '', orderNo: 0 };
-      this.loadProjects();
+    this.addingFeatureProjectId.set(proj.professionalProjectID);
+    this.cms.addProfessionalProjectFeature(userID, proj.professionalProjectID, { ...form }).subscribe({
+      next: () => {
+        this.addingFeatureProjectId.set(null);
+        this.ppFeatureForms[proj.professionalProjectID] = { title: '', description: '', orderNo: 0 };
+        this.loadProjects();
+      },
+      error: () => this.addingFeatureProjectId.set(null),
     });
   }
 
   deleteFeature(proj: ProfessionalProject, featureID: number): void {
     const userID = this.selectedUserID();
     if (!userID) return;
-    this.cms.deleteProfessionalProjectFeature(userID, proj.professionalProjectID, featureID)
-      .subscribe(() => this.loadProjects());
+    this.deletingFeatureId.set(featureID);
+    this.cms.deleteProfessionalProjectFeature(userID, proj.professionalProjectID, featureID).subscribe({
+      next: () => { this.deletingFeatureId.set(null); this.loadProjects(); },
+      error: () => this.deletingFeatureId.set(null),
+    });
   }
 
   getImageForm(featureID: number): { file: File | null; caption: string } {
@@ -125,17 +154,24 @@ export class AdminProfessionalProjectsComponent implements OnInit {
     const userID = this.selectedUserID();
     const form = this.getImageForm(featureID);
     if (!userID || !form.file) return;
-    this.cms.addFeatureImage(userID, proj.professionalProjectID, featureID, form.file, form.caption)
-      .subscribe(() => {
+    this.uploadingImageFeatureId.set(featureID);
+    this.cms.addFeatureImage(userID, proj.professionalProjectID, featureID, form.file, form.caption).subscribe({
+      next: () => {
+        this.uploadingImageFeatureId.set(null);
         this.ppFeatureImageForms[featureID] = { file: null, caption: '' };
         this.loadProjects();
-      });
+      },
+      error: () => this.uploadingImageFeatureId.set(null),
+    });
   }
 
   deleteImage(proj: ProfessionalProject, featureID: number, imageID: number): void {
     const userID = this.selectedUserID();
     if (!userID) return;
-    this.cms.deleteFeatureImage(userID, proj.professionalProjectID, featureID, imageID)
-      .subscribe(() => this.loadProjects());
+    this.deletingImageId.set(imageID);
+    this.cms.deleteFeatureImage(userID, proj.professionalProjectID, featureID, imageID).subscribe({
+      next: () => { this.deletingImageId.set(null); this.loadProjects(); },
+      error: () => this.deletingImageId.set(null),
+    });
   }
 }

@@ -239,7 +239,7 @@
         <textarea class="form-control" name="messageBody" [(ngModel)]="form.messageBody" placeholder="Tell us about your project..."></textarea>
       </div>
       <button class="btn btn-primary btn-block" type="submit" [disabled]="sending()">
-        {{ sending() ? 'Sending...' : 'Send message' }}
+        @if (sending()) { <span class="btn-spinner"></span> Sending… } @else { Send message }
       </button>
     </form>
   </div>
