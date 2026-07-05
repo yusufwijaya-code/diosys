@@ -261,7 +261,7 @@ export class PhoneFieldComponent implements OnInit {
   }
 
   get placeholder(): string {
-    return this.selectedIso() === 'ID' ? '812 3456 7890' : '123 456 7890';
+    return this.selectedIso() === 'ID' ? '81234567890' : '1234567890';
   }
 
   constructor(private el: ElementRef) {}

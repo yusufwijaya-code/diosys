@@ -11,7 +11,6 @@ import { PublicService } from '../../../core/services/public.service';
 import {
   DeveloperCard,
   MessageRequest,
-  PricePlan,
   Project,
   Service,
   SettingsMap,
@@ -28,7 +27,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   services = signal<Service[]>([]);
   projects = signal<Project[]>([]);
   developers = signal<DeveloperCard[]>([]);
-  pricingPlans = signal<PricePlan[]>([]);
   settings = signal<SettingsMap>({});
 
   sending = signal(false);
@@ -57,7 +55,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   });
 
   private onApiLoaded(): void {
-    if (++this.apisLoaded < 5) return;
+    if (++this.apisLoaded < 4) return;
     if (this.pendingFragment) {
       const fragment = this.pendingFragment;
       this.pendingFragment = null;
@@ -72,7 +70,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.publicService.getServices().subscribe((s) => { this.services.set(s); this.onApiLoaded(); });
     this.publicService.getProjects().subscribe((p) => { this.projects.set(p.slice(0, 6)); this.onApiLoaded(); });
     this.publicService.getDevelopers().subscribe((d) => { this.developers.set(d); this.onApiLoaded(); });
-    this.publicService.getPricing().subscribe((p) => { this.pricingPlans.set(p); this.onApiLoaded(); });
     this.publicService.getSettings().subscribe((s) => { this.settings.set(s); this.onApiLoaded(); });
 
     // Handle fragment navigation while already on the home page (anchorScrolling is disabled globally)
@@ -86,13 +83,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerSub?.unsubscribe();
-  }
-
-  formatPrice(price: number, currency: string): string {
-    if (currency === 'IDR') {
-      return 'Rp ' + price.toLocaleString('id-ID');
-    }
-    return currency + ' ' + price.toLocaleString();
   }
 
   submit(): void {

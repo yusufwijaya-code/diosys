@@ -53,11 +53,6 @@ export const routes: Routes = [
           import('./pages/admin/admin-services/admin-services.component').then((m) => m.AdminServicesComponent),
       },
       {
-        path: 'pricing',
-        loadComponent: () =>
-          import('./pages/admin/admin-pricing/admin-pricing.component').then((m) => m.AdminPricingComponent),
-      },
-      {
         path: 'settings',
         loadComponent: () =>
           import('./pages/admin/admin-settings/admin-settings.component').then((m) => m.AdminSettingsComponent),

@@ -4,8 +4,6 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import {
   Certificate,
-  PricePlan,
-  PricePlanRequest,
   CertificateRequest,
   ClientMessage,
   Developer,
@@ -222,17 +220,4 @@ export class CmsService {
     return this.api.put<SettingsMap>('/cms/settings', { settings });
   }
 
-  // ---------- Pricing ----------
-  getPricingPlans(): Observable<PricePlan[]> {
-    return this.api.get<PricePlan[]>('/cms/pricing');
-  }
-  createPricingPlan(body: PricePlanRequest): Observable<PricePlan> {
-    return this.api.post<PricePlan>('/cms/pricing', body);
-  }
-  updatePricingPlan(id: number, body: PricePlanRequest): Observable<PricePlan> {
-    return this.api.put<PricePlan>(`/cms/pricing/${id}`, body);
-  }
-  deletePricingPlan(id: number): Observable<unknown> {
-    return this.api.delete<unknown>(`/cms/pricing/${id}`);
-  }
 }

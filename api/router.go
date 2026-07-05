@@ -12,7 +12,6 @@ import (
 	"portfolio-api/modules/education"
 	"portfolio-api/modules/experience"
 	"portfolio-api/modules/message"
-	"portfolio-api/modules/pricing"
 	"portfolio-api/modules/professional_project"
 	"portfolio-api/modules/project"
 	"portfolio-api/modules/service"
@@ -69,7 +68,6 @@ func SetupRouter(
 	service.Router(public, protected, db)
 	message.Router(public, protected, db)
 	setting.Router(public, protected, db)
-	pricing.Router(public, protected, db)
 
 	return router
 }

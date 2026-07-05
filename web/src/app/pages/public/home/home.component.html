@@ -106,47 +106,36 @@
   </div>
 </section>
 
-<!-- Pricing -->
-<section id="pricing" class="section section-secondary" [style.display]="pricingPlans().length === 0 ? 'none' : ''">
-  <div class="container">
+<!-- Pricing CTA -->
+<section id="pricing" class="section section-secondary">
+  <div class="container pricing-cta-wrap">
     <span class="eyebrow">Pricing</span>
-    <h2 class="section-title">Transparent pricing, no surprises</h2>
-    <p class="section-subtitle">Choose a plan that fits your project. All plans include dedicated support.</p>
+    <h2 class="section-title">Tailored to your project</h2>
+    <p class="section-subtitle pricing-cta-sub">
+      Every project is unique — scope, scale, and complexity vary. Get in touch with our developers directly to discuss your requirements and receive a custom quote.
+    </p>
 
-    <div class="pricing-grid">
-      @for (plan of pricingPlans(); track plan.planID) {
-        <div class="pricing-card" [class.pricing-featured]="plan.isFeatured">
-          @if (plan.badge) { <span class="pricing-badge">{{ plan.badge }}</span> }
-
-          <div class="pricing-header">
-            <h3>{{ plan.title }}</h3>
-            @if (plan.subtitle) { <p class="pricing-subtitle">{{ plan.subtitle }}</p> }
-          </div>
-
-          <div class="pricing-price">
-            @if (plan.originalPrice !== null) {
-              <span class="pricing-original">{{ formatPrice(plan.originalPrice!, plan.currency) }}</span>
-            }
-            <div class="pricing-amount">
-              <span class="pricing-value">{{ formatPrice(plan.price, plan.currency) }}</span>
-              @if (plan.billingPeriod) { <span class="pricing-period">{{ plan.billingPeriod }}</span> }
-            </div>
-            @if (plan.discountPercent !== null) {
-              <span class="pricing-discount">Save {{ plan.discountPercent }}%</span>
+    <div class="pricing-cta-cards">
+      @for (dev of developers(); track dev.userID) {
+        <a class="pricing-dev-card" [routerLink]="['/', dev.username]" fragment="contact">
+          <div class="pdc-photo">
+            @if (dev.photoUrl) {
+              <img [src]="dev.photoUrl" [alt]="dev.fullName" loading="lazy" />
+            } @else {
+              <span class="pdc-initials">{{ dev.fullName.charAt(0) }}</span>
             }
           </div>
-
-          <ul class="pricing-features">
-            @for (feature of plan.features; track feature.featureID) {
-              <li [class.excluded]="!feature.isIncluded">
-                <span class="feat-icon">{{ feature.isIncluded ? '✓' : '✕' }}</span>
-                {{ feature.text }}
-              </li>
-            }
-          </ul>
-
-          <a class="btn btn-block" [class.btn-primary]="plan.isFeatured" [class.btn-ghost]="!plan.isFeatured"
-             [routerLink]="['/']" fragment="contact">Get started</a>
+          <div class="pdc-info">
+            <span class="pdc-name">{{ dev.fullName }}</span>
+            <span class="pdc-role">{{ dev.jobTitle }}</span>
+          </div>
+          <span class="pdc-cta">Get in touch →</span>
+        </a>
+      }
+      @empty {
+        <div class="pricing-cta-fallback">
+          <p>Ready to start? Reach out and we'll get back to you.</p>
+          <a class="btn btn-primary" [routerLink]="['/']" fragment="contact">Contact us</a>
         </div>
       }
     </div>

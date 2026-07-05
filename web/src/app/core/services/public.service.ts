@@ -6,7 +6,6 @@ import {
   ClientMessage,
   DeveloperCard,
   DeveloperProfile,
-  PricePlan,
   MessageRequest,
   ProfessionalProject,
   Project,
@@ -45,10 +44,6 @@ export class PublicService {
 
   getSettings(): Observable<SettingsMap> {
     return this.api.get<SettingsMap>('/public/settings');
-  }
-
-  getPricing(): Observable<PricePlan[]> {
-    return this.api.get<PricePlan[]>('/public/pricing');
   }
 
   sendContact(body: MessageRequest): Observable<ClientMessage> {

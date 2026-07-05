@@ -202,46 +202,6 @@ export interface ClientMessage {
 
 export type SettingsMap = Record<string, string>;
 
-/* ---------- Pricing ---------- */
-
-export interface PriceFeature {
-  featureID: number;
-  text: string;
-  isIncluded: boolean;
-  orderNo: number;
-}
-
-export interface PricePlan {
-  planID: number;
-  title: string;
-  subtitle: string;
-  price: number;
-  currency: string;
-  billingPeriod: string;
-  badge: string;
-  originalPrice: number | null;
-  discountPercent: number | null;
-  isFeatured: boolean;
-  flagActive: boolean;
-  orderNo: number;
-  features: PriceFeature[];
-}
-
-export interface PricePlanRequest {
-  title: string;
-  subtitle: string;
-  price: number;
-  currency: string;
-  billingPeriod: string;
-  badge: string;
-  originalPrice: number | null;
-  discountPercent: number | null;
-  isFeatured: boolean;
-  flagActive: boolean;
-  orderNo: number;
-  features: { text: string; isIncluded: boolean }[];
-}
-
 /* ---------- Request payloads ---------- */
 
 export interface DeveloperRequest {
