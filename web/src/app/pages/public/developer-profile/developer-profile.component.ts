@@ -8,6 +8,7 @@ import { IconComponent } from '../../../components/icon/icon.component';
 import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 import { PhoneFieldComponent } from '../../../components/phone-field/phone-field.component';
 import { PublicService } from '../../../core/services/public.service';
+import { WhatsappContextService } from '../../../core/services/whatsapp-context.service';
 import { DeveloperProfile, MessageRequest, Skill } from '../../../core/models/diosys.model';
 
 @Component({
@@ -31,6 +32,7 @@ export class DeveloperProfileComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private publicService: PublicService,
     private titleService: Title,
+    private waContext: WhatsappContextService,
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +51,7 @@ export class DeveloperProfileComponent implements OnInit, OnDestroy {
         this.profile.set(profile);
         this.loading.set(false);
         this.titleService.setTitle(`${profile.developer.fullName} — Diosys`);
+        this.waContext.setDeveloper(profile.developer.phone, profile.developer.fullName);
         if (fragment) setTimeout(() => this.scrollTo(fragment), 100);
       },
       error: () => {

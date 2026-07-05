@@ -1,6 +1,7 @@
 import { Component, Input, computed, signal } from '@angular/core';
 
 import { SettingsMap } from '../../core/models/diosys.model';
+import { WhatsappContextService } from '../../core/services/whatsapp-context.service';
 
 @Component({
   selector: 'app-whatsapp-float',
@@ -33,11 +34,15 @@ export class WhatsappFloatComponent {
     this.settingsSig.set(value || {});
   }
 
-  link = computed(() => {
+  private globalLink = computed(() => {
     const s = this.settingsSig();
     const number = (s['whatsappNumber'] || '').replace(/[^0-9]/g, '');
     if (!number) return '';
     const text = encodeURIComponent(s['whatsappDefaultMessage'] || '');
     return `https://wa.me/${number}${text ? '?text=' + text : ''}`;
   });
+
+  link = computed(() => this.waContext.link() || this.globalLink());
+
+  constructor(private waContext: WhatsappContextService) {}
 }

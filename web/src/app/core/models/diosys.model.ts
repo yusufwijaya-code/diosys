@@ -81,6 +81,7 @@ export interface ProfessionalProject {
   summary: string;
   thumbnailUrl: string;
   features: ProfessionalProjectFeature[];
+  ownerPhone: string;
   orderNo: number;
 }
 
@@ -151,6 +152,7 @@ export interface Project {
   userID: number;
   ownerUsername: string;
   ownerFullName: string;
+  ownerPhone: string;
   title: string;
   summary: string;
   body: string;

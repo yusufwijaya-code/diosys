@@ -14,6 +14,12 @@ type ProfessionalProject struct {
 	CreatedDate           null.Time   `db:"createdDate"`
 }
 
+// ProfessionalProjectWithOwner includes the owner's phone for the public detail view.
+type ProfessionalProjectWithOwner struct {
+	ProfessionalProject
+	OwnerPhone null.String `db:"ownerPhone"`
+}
+
 type ProjectFeature struct {
 	FeatureID             int         `db:"featureID"`
 	ProfessionalProjectID int         `db:"professionalProjectID"`

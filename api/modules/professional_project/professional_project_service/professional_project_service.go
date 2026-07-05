@@ -106,14 +106,19 @@ func (s *profProjServiceImpl) GetByUser(userID int) ([]professional_project_dto.
 }
 
 func (s *profProjServiceImpl) GetByID(projectID int) (professional_project_dto.ProfessionalProjectResponse, error) {
-	p, err := s.repository.FindByID(projectID)
+	p, err := s.repository.FindByIDWithOwner(projectID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return professional_project_dto.ProfessionalProjectResponse{}, error_helper.NotFound("professional project not found")
 		}
 		return professional_project_dto.ProfessionalProjectResponse{}, error_helper.Internal(err)
 	}
-	return s.buildResponse(p)
+	resp, err := s.buildResponse(p.ProfessionalProject)
+	if err != nil {
+		return resp, err
+	}
+	resp.OwnerPhone = p.OwnerPhone.String
+	return resp, nil
 }
 
 func (s *profProjServiceImpl) Create(userID int, req professional_project_dto.ProfessionalProjectRequest) (professional_project_dto.ProfessionalProjectResponse, error) {

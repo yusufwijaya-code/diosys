@@ -51,5 +51,6 @@ type ProfessionalProjectResponse struct {
 	Summary               string                   `json:"summary"`
 	ThumbnailUrl          string                   `json:"thumbnailUrl"`
 	Features              []ProjectFeatureResponse `json:"features"`
+	OwnerPhone            string                   `json:"ownerPhone"`
 	OrderNo               int                      `json:"orderNo"`
 }

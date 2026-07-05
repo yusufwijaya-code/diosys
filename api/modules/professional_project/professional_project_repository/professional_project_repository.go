@@ -9,6 +9,7 @@ import (
 type ProfessionalProjectRepository interface {
 	FindByUser(userID int) ([]professional_project_model.ProfessionalProject, error)
 	FindByID(projectID int) (professional_project_model.ProfessionalProject, error)
+	FindByIDWithOwner(projectID int) (professional_project_model.ProfessionalProjectWithOwner, error)
 	Create(project professional_project_model.ProfessionalProject) (int, error)
 	UpdateThumbnail(projectID int, fileName, gdriveID string) error
 	Delete(projectID int) error
@@ -45,6 +46,19 @@ func (r *profProjRepositoryImpl) FindByID(projectID int) (professional_project_m
 		`SELECT professionalProjectID, userID, title, company, summary,
 		        thumbnailGdriveID, thumbnailFileName, orderNo, createdDate
 		 FROM ms_professional_project WHERE professionalProjectID = ? LIMIT 1`,
+		projectID)
+	return row, err
+}
+
+func (r *profProjRepositoryImpl) FindByIDWithOwner(projectID int) (professional_project_model.ProfessionalProjectWithOwner, error) {
+	var row professional_project_model.ProfessionalProjectWithOwner
+	err := r.db.Get(&row,
+		`SELECT p.professionalProjectID, p.userID, p.title, p.company, p.summary,
+		        p.thumbnailGdriveID, p.thumbnailFileName, p.orderNo, p.createdDate,
+		        u.phone AS ownerPhone
+		 FROM ms_professional_project p
+		 INNER JOIN ms_user u ON u.userID = p.userID
+		 WHERE p.professionalProjectID = ? LIMIT 1`,
 		projectID)
 	return row, err
 }

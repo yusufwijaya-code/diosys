@@ -68,6 +68,7 @@ type ProjectImage struct {
 // ProjectWithOwner is a project joined with its developer for public listings.
 type ProjectWithOwner struct {
 	Project
-	OwnerUsername string `db:"ownerUsername" json:"ownerUsername"`
-	OwnerFullName string `db:"ownerFullName" json:"ownerFullName"`
+	OwnerUsername string      `db:"ownerUsername" json:"ownerUsername"`
+	OwnerFullName string      `db:"ownerFullName" json:"ownerFullName"`
+	OwnerPhone    null.String `db:"ownerPhone"    json:"ownerPhone"`
 }

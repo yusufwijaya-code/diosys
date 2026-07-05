@@ -45,7 +45,7 @@ func (r *projectRepositoryImpl) FindAllPublic() ([]project_model.ProjectWithOwne
 	projects := []project_model.ProjectWithOwner{}
 	query := `SELECT p.projectID, p.userID, p.title, p.summary, p.body, p.client, p.projectLink,
 		p.repoLink, p.projectStatusID, p.isFeatured, p.thumbnailFileName, p.thumbnailGdriveID,
-		p.orderNo, p.createdDate, p.editedDate, u.username AS ownerUsername, u.fullName AS ownerFullName
+		p.orderNo, p.createdDate, p.editedDate, u.username AS ownerUsername, u.fullName AS ownerFullName, u.phone AS ownerPhone
 		FROM ms_project p
 		INNER JOIN ms_user u ON u.userID = p.userID
 		WHERE u.flagActive = 1
@@ -73,7 +73,7 @@ func (r *projectRepositoryImpl) FindByIDWithOwner(projectID int) (project_model.
 	var project project_model.ProjectWithOwner
 	query := `SELECT p.projectID, p.userID, p.title, p.summary, p.body, p.client, p.projectLink,
 		p.repoLink, p.projectStatusID, p.isFeatured, p.thumbnailFileName, p.thumbnailGdriveID,
-		p.orderNo, p.createdDate, p.editedDate, u.username AS ownerUsername, u.fullName AS ownerFullName
+		p.orderNo, p.createdDate, p.editedDate, u.username AS ownerUsername, u.fullName AS ownerFullName, u.phone AS ownerPhone
 		FROM ms_project p
 		INNER JOIN ms_user u ON u.userID = p.userID
 		WHERE p.projectID = ? LIMIT 1`

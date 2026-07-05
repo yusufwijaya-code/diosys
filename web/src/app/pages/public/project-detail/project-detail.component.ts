@@ -7,6 +7,7 @@ import { IconComponent } from '../../../components/icon/icon.component';
 import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 import { PublicService } from '../../../core/services/public.service';
 import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
+import { WhatsappContextService } from '../../../core/services/whatsapp-context.service';
 import { Project } from '../../../core/models/diosys.model';
 
 @Component({
@@ -30,6 +31,7 @@ export class ProjectDetailComponent implements OnInit {
     private publicService: PublicService,
     private titleService: Title,
     private navHistory: NavigationHistoryService,
+    private waContext: WhatsappContextService,
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +58,7 @@ export class ProjectDetailComponent implements OnInit {
         this.project.set(project);
         this.loading.set(false);
         this.titleService.setTitle(`${project.title} — Diosys`);
+        this.waContext.setDeveloper(project.ownerPhone, project.ownerFullName);
       },
       error: () => {
         this.loading.set(false);

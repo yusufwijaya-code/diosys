@@ -6,6 +6,7 @@ import { Title } from '@angular/platform-browser';
 import { IconComponent } from '../../../components/icon/icon.component';
 import { SpinnerComponent } from '../../../components/spinner/spinner.component';
 import { PublicService } from '../../../core/services/public.service';
+import { WhatsappContextService } from '../../../core/services/whatsapp-context.service';
 import { ProfessionalProject } from '../../../core/models/diosys.model';
 
 @Component({
@@ -25,6 +26,7 @@ export class ProfessionalProjectDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private publicService: PublicService,
     private titleService: Title,
+    private waContext: WhatsappContextService,
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class ProfessionalProjectDetailComponent implements OnInit {
         this.project.set(project);
         this.loading.set(false);
         this.titleService.setTitle(`${project.title} — ${project.company} — Diosys`);
+        this.waContext.setDeveloper(project.ownerPhone, this.username);
       },
       error: () => {
         this.loading.set(false);

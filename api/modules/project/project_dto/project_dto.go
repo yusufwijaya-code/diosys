@@ -53,6 +53,7 @@ type ProjectResponse struct {
 	UserID            int                      `json:"userID"`
 	OwnerUsername     string                   `json:"ownerUsername"`
 	OwnerFullName     string                   `json:"ownerFullName"`
+	OwnerPhone        string                   `json:"ownerPhone"`
 	Title             string                   `json:"title"`
 	Summary           string                   `json:"summary"`
 	Body              string                   `json:"body"`

@@ -39,7 +39,7 @@ func NewProjectService(repository project_repository.ProjectRepository, gdrive *
 	return &projectServiceImpl{repository: repository, gdrive: gdrive}
 }
 
-func (s *projectServiceImpl) buildResponse(project project_model.Project, ownerUsername, ownerFullName string) (project_dto.ProjectResponse, error) {
+func (s *projectServiceImpl) buildResponse(project project_model.Project, ownerUsername, ownerFullName, ownerPhone string) (project_dto.ProjectResponse, error) {
 	features, err := s.repository.GetFeatures(project.ProjectID)
 	if err != nil {
 		return project_dto.ProjectResponse{}, error_helper.Internal(err)
@@ -103,6 +103,7 @@ func (s *projectServiceImpl) buildResponse(project project_model.Project, ownerU
 		UserID:            project.UserID,
 		OwnerUsername:     ownerUsername,
 		OwnerFullName:     ownerFullName,
+		OwnerPhone:        ownerPhone,
 		Title:             project.Title,
 		Summary:           project.Summary.String,
 		Body:              project.Body.String,
@@ -129,7 +130,7 @@ func (s *projectServiceImpl) GetAllPublic() ([]project_dto.ProjectResponse, erro
 
 	responses := make([]project_dto.ProjectResponse, 0, len(projects))
 	for _, project := range projects {
-		response, err := s.buildResponse(project.Project, project.OwnerUsername, project.OwnerFullName)
+		response, err := s.buildResponse(project.Project, project.OwnerUsername, project.OwnerFullName, project.OwnerPhone.String)
 		if err != nil {
 			return nil, err
 		}
@@ -146,7 +147,7 @@ func (s *projectServiceImpl) GetByUser(userID int) ([]project_dto.ProjectRespons
 
 	responses := make([]project_dto.ProjectResponse, 0, len(projects))
 	for _, project := range projects {
-		response, err := s.buildResponse(project, "", "")
+		response, err := s.buildResponse(project, "", "", "")
 		if err != nil {
 			return nil, err
 		}
@@ -163,7 +164,7 @@ func (s *projectServiceImpl) GetByID(projectID int) (project_dto.ProjectResponse
 		}
 		return project_dto.ProjectResponse{}, error_helper.Internal(err)
 	}
-	return s.buildResponse(project.Project, project.OwnerUsername, project.OwnerFullName)
+	return s.buildResponse(project.Project, project.OwnerUsername, project.OwnerFullName, project.OwnerPhone.String)
 }
 
 func (s *projectServiceImpl) Create(userID int, request project_dto.ProjectRequest) (project_dto.ProjectResponse, error) {
